@@ -97,27 +97,27 @@ def compute_country_taxes(code: str, gross_monthly: float, bonus_value: float, i
         employer_cost = gross_monthly * 0.024  # seguro cesantía médio
         notes.append("AFP + Salud conforme seleção; imposto linear ilustrativo.")
     elif code == "ar":
-        jubilacion = float(inputs.get("jubilacion") or 0.11)
-        obra_social = float(inputs.get("obra_social") or 0.03)
+        jubilacion = 0.11
+        obra_social = 0.03
         social_security = gross_monthly * (jubilacion + obra_social)
         income_tax = max((gross_monthly - social_security) * 0.15, 0)
         employer_cost = gross_monthly * 0.25
-        notes.append("Jubilación + Obra Social; Ganancias aproximado.")
+        notes.append("Jubilación + Obra Social automáticas; Ganancias aproximado.")
     elif code == "co":
         pension = gross_monthly * 0.04
         salud = gross_monthly * 0.04
-        solidarity = float(inputs.get("solidarity_fund") or 0)
+        solidarity = gross_monthly * 0.01
         social_security = pension + salud + solidarity
         income_tax = max((gross_monthly - social_security) * 0.1, 0)
         employer_cost = gross_monthly * 0.30
-        notes.append("Saúde e pensão de 4%; imposto linear ilustrativo.")
+        notes.append("Saúde e pensão de 4% + fundo solidariedade automático; IR linear.")
     elif code == "mx":
-        cuota_obrera = float(inputs.get("cuota_obrera") or 0.04)
-        riesgo = float(inputs.get("riesgo_trabajo") or 0.01)
+        cuota_obrera = 0.04
+        riesgo = 0.0
         social_security = gross_monthly * (cuota_obrera + riesgo)
         income_tax = max((gross_monthly - social_security) * 0.15, 0)
         employer_cost = gross_monthly * 0.20
-        notes.append("IMSS simplificado e ISR linear para ilustração.")
+        notes.append("IMSS (cuota obrera automática) e ISR linear para ilustração.")
     elif code == "us":
         ss = gross_monthly * 0.062
         medicare = gross_monthly * 0.0145
