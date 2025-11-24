@@ -39,7 +39,6 @@ def render_country_form(
             key=f"{prefix}_country_select_inside",
         )
         code = label_to_code[selected_label]
-        # Atualiza sessão imediatamente para rerender no mesmo ciclo
         st.session_state["page1_country_code"] = code
     cfg: CountryConfig = COUNTRIES.get(code, DEFAULT_COUNTRY)
     form_key = f"{prefix}_{code}"
@@ -50,23 +49,11 @@ def render_country_form(
 
     # Primeira linha: país + campos variáveis por país
     if code == "ca":
-        cols = st.columns([1, 1, 1, 1])
-        country_col, province_col, contract_col, adj_col = cols
+        province_col, contract_col, adj_col = st.columns(3)
     elif code in ("co", "mx", "us"):
-        cols = st.columns([1, 1, 1])
-        country_col, second_col, contract_col = cols
+        second_col, contract_col = st.columns(2)
     else:
-        cols = st.columns([1, 1])
-        country_col, contract_col = cols
-
-    # País sempre na primeira coluna
-    country_col.selectbox(
-        t(translations, "country_label"),
-        labels,
-        index=labels.index(values["country_label"]),
-        key=k("country_display"),
-        disabled=True,
-    )
+        contract_col = st.columns(1)[0]
 
     if code == "ca":
         values["province"] = province_col.selectbox(
