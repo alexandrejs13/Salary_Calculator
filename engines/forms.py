@@ -25,6 +25,7 @@ def render_country_form(
     labels = list(label_to_code.keys())
     default_idx = labels.index(COUNTRIES.get(code, DEFAULT_COUNTRY).label) if code in [c.code for c in COUNTRIES.values()] else 0
     selected_label = None
+    cfg: CountryConfig = COUNTRIES.get(code, DEFAULT_COUNTRY)
 
     values: Dict = {"country_code": code}
 
@@ -48,7 +49,6 @@ def render_country_form(
             disabled=True,
             key=f"{prefix}_country_label",
         )
-        cfg: CountryConfig = COUNTRIES.get(code, DEFAULT_COUNTRY)
     values["contract_type"] = col2.selectbox(
         t(translations, "contract_label"),
         cfg.contracts,
