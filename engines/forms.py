@@ -48,8 +48,9 @@ def render_country_form(
     values["country_label"] = selected_label if selected_label else cfg.label
 
     # Primeira linha: país + campos variáveis por país
-    cols[0].markdown(f"**{t(translations, 'country_label')}**")
-    cols[0].markdown(f"{values['country_label']}")
+    if not allow_country_select:
+        cols[0].markdown(f"**{t(translations, 'country_label')}**")
+        cols[0].markdown(f"{values['country_label']}")
 
     if code == "ca":
         values["province"] = cols[1].selectbox(
