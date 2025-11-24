@@ -26,7 +26,7 @@ COUNTRIES: Dict[str, CountryConfig] = {
             "Incidência total: FGTS, 13º, férias, IRRF, INSS",
         ],
         extras={
-            "previdencia": ["PGBL", "VGBL", "FGBL"],
+            "previdencia": ["PGBL (deduz IR)", "VGBL (não deduz IR)", "FGBL (não deduz IR)"],
         },
     ),
     "cl": CountryConfig(
