@@ -149,9 +149,9 @@ def render_country_form(
         f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_discounts'))}</div>",
         unsafe_allow_html=True,
     )
-    if code in ("cl", "us"):
+    if current_code in ("cl", "us"):
         col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
-    elif code == "ca":
+    elif current_code == "ca":
         col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
     else:
         col1, col2, col3 = st.columns([1, 1, 1])
@@ -175,7 +175,7 @@ def render_country_form(
         step=1,
         key=k("dependents"),
     )
-    if code == "cl":
+    if current_code == "cl":
         values["health_option"] = col4.selectbox(
             t(translations, "health_label"),
             cfg.extras.get("salud", ["FONASA (7%)", "ISAPRE"]),
@@ -189,7 +189,7 @@ def render_country_form(
             value=0.1,
             key=k("afp"),
         )
-    if code == "us":
+    if current_code == "us":
         values["filing_status"] = col4.selectbox(
             t(translations, "filing_status_label"),
             cfg.extras.get("filing_status", []),
@@ -201,7 +201,7 @@ def render_country_form(
             step=50.0,
             key=k("withholding"),
         )
-    if code == "ca":
+    if current_code == "ca":
         values["additional_withholding"] = col4.number_input(
             t(translations, "additional_withholding"),
             min_value=0.0,
