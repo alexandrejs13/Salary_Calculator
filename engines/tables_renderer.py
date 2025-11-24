@@ -50,21 +50,12 @@ def render_three_column_table(
 
 
 def render_extra_info(extras: Dict, translations: Dict[str, str], currency: str, mode: str = "monthly") -> None:
-    fgts_monthly = extras.get("fgts_monthly", 0)
-    fgts_annual = extras.get("fgts_annual", 0)
-    pension_emp_monthly = extras.get("pension_employer_monthly", 0)
-    pension_emp_annual = extras.get("pension_employer_annual", 0)
+    benefits = extras.get("benefits_monthly" if mode == "monthly" else "benefits_annual", [])
+    pension = extras.get("pension_employer_monthly" if mode == "monthly" else "pension_employer_annual", 0)
 
-    if mode == "monthly":
-        fgts = fgts_monthly
-        pension = pension_emp_monthly
-    else:
-        fgts = fgts_annual
-        pension = pension_emp_annual
-
-    if fgts or pension:
+    if benefits or pension:
         st.markdown("<br/>", unsafe_allow_html=True)
-    if fgts:
-        st.markdown(f"- FGTS: {format_currency(fgts, currency)}")
+    for label, value in benefits:
+        st.markdown(f"- {label}: {format_currency(value, currency)}")
     if pension:
         st.markdown(f"- Previdência Privada Empregador: {format_currency(pension, currency)}")

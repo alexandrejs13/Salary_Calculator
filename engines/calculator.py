@@ -193,9 +193,51 @@ def calculate_compensation(country_code: str, inputs: Dict) -> CalculationResult
     ]
 
     pension_employer_input = float(inputs.get("pension_employer") or 0)
+    benefits_monthly = []
+    benefits_annual = []
+
+    if country_code == "br":
+        fgts_m = monthly_gross * 0.08
+        fgts_a = fgts_m * cfg.annual_frequency
+        benefits_monthly.append(("FGTS", fgts_m))
+        benefits_annual.append(("FGTS", fgts_a))
+
+    if country_code == "cl":
+        afp_rate = float(inputs.get("afp_rate") or 0.1)
+        afp_m = monthly_gross * afp_rate
+        afp_a = afp_m * cfg.annual_frequency
+        benefits_monthly.append(("Saldo AFP (empregado)", afp_m))
+        benefits_annual.append(("Saldo AFP (empregado)", afp_a))
+
+    if country_code == "ar":
+        jub_m = monthly_gross * 0.11
+        obra_m = monthly_gross * 0.03
+        benefits_monthly.append(("Fondo de Jubilación", jub_m))
+        benefits_monthly.append(("Obra Social", obra_m))
+        benefits_annual.append(("Fondo de Jubilación", jub_m * cfg.annual_frequency))
+        benefits_annual.append(("Obra Social", obra_m * cfg.annual_frequency))
+
+    if country_code == "co":
+        pension_m = monthly_gross * 0.04
+        cesantia_m = monthly_gross / 12
+        benefits_monthly.append(("Fundo de Pensión", pension_m))
+        benefits_monthly.append(("Cesantías", cesantia_m))
+        benefits_annual.append(("Fundo de Pensión", pension_m * cfg.annual_frequency))
+        benefits_annual.append(("Cesantías", cesantia_m * cfg.annual_frequency))
+
+    if country_code == "mx":
+        afore_m = monthly_gross * 0.065
+        benefits_monthly.append(("AFORE (estimado)", afore_m))
+        benefits_annual.append(("AFORE (estimado)", afore_m * cfg.annual_frequency))
+
+    if country_code == "ca":
+        rrsp_m = float(inputs.get("pension_employee") or 0)
+        benefits_monthly.append(("RRSP / Group RRSP (empregado)", rrsp_m))
+        benefits_annual.append(("RRSP / Group RRSP (empregado)", rrsp_m * cfg.annual_frequency))
+
     extras = {
-        "fgts_monthly": monthly_gross * 0.08 if country_code == "br" else 0,
-        "fgts_annual": monthly_gross * 0.08 * cfg.annual_frequency if country_code == "br" else 0,
+        "benefits_monthly": benefits_monthly,
+        "benefits_annual": benefits_annual,
         "pension_employer_monthly": pension_employer_input,
         "pension_employer_annual": pension_employer_input * cfg.annual_frequency,
         "employer_cost_monthly": tax_data["employer_cost"],

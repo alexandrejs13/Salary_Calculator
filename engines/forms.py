@@ -43,7 +43,7 @@ def render_country_form(
         cols = st.columns(2)
 
     if allow_country_select:
-        selected_label = cols[0].selectbox(
+        selected_label = st.selectbox(
             t(translations, "country_label"),
             labels,
             index=default_idx,
@@ -58,8 +58,6 @@ def render_country_form(
 
     # Primeira linha: país + campos adicionais por país
     if code == "ca":
-        cols[0].markdown(f"**{t(translations, 'country_label')}**")
-        cols[0].markdown(f"{values['country_label']}")
         values["province"] = cols[1].selectbox(
             t(translations, "province_label"),
             cfg.extras.get("provinces", []),
@@ -76,27 +74,37 @@ def render_country_form(
             step=50.0,
             key=k("prov_adj"),
         )
-    elif code in ("co", "mx", "us"):
-        cols[0].markdown(f"**{t(translations, 'country_label')}**")
-        cols[0].markdown(f"{values['country_label']}")
-        if code == "co":
-            values["city"] = cols[1].text_input(t(translations, "city_label"), key=k("city"))
-        if code in ("mx", "us"):
-            state_options = cfg.extras.get("estados" if code == "mx" else "states", [])
-            values["state"] = cols[1].selectbox(
-                t(translations, "state_label"),
-                state_options,
-                key=k("state"),
-            )
-        values["contract_type"] = cols[2].selectbox(
+    elif code == "co":
+        values["city"] = cols[0].text_input(t(translations, "city_label"), key=k("city"))
+        values["contract_type"] = cols[1].selectbox(
+            t(translations, "contract_label"),
+            cfg.contracts,
+            key=k("contract"),
+        )
+    elif code == "mx":
+        values["state"] = cols[0].selectbox(
+            t(translations, "state_label"),
+            cfg.extras.get("estados", []),
+            key=k("state"),
+        )
+        values["contract_type"] = cols[1].selectbox(
+            t(translations, "contract_label"),
+            cfg.contracts,
+            key=k("contract"),
+        )
+    elif code == "us":
+        values["state"] = cols[0].selectbox(
+            t(translations, "state_label"),
+            cfg.extras.get("states", []),
+            key=k("state"),
+        )
+        values["contract_type"] = cols[1].selectbox(
             t(translations, "contract_label"),
             cfg.contracts,
             key=k("contract"),
         )
     else:
-        cols[0].markdown(f"**{t(translations, 'country_label')}**")
-        cols[0].markdown(f"{values['country_label']}")
-        values["contract_type"] = cols[1].selectbox(
+        values["contract_type"] = cols[0].selectbox(
             t(translations, "contract_label"),
             cfg.contracts,
             key=k("contract"),
