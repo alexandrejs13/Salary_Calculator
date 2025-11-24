@@ -31,7 +31,12 @@ def render_country_form(
         f"<div style='margin-top:6px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_location_contract'))}</div>",
         unsafe_allow_html=True,
     )
-    cols = st.columns([1, 1, 1, 1])
+    if code == "ca":
+        cols = st.columns([1, 1, 1, 1])
+    elif code in ("co", "mx", "us"):
+        cols = st.columns([1, 1, 1])
+    else:
+        cols = st.columns([1, 1])
 
     if allow_country_select:
         selected_label = cols[0].selectbox(
