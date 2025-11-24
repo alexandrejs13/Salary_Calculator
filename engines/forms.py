@@ -106,7 +106,6 @@ def render_country_form(
             key=k("contract"),
         )
     else:
-        contract_col = st.columns([1])[0]
         values["contract_type"] = contract_col.selectbox(
             t(translations, "contract_label"),
             cfg.contracts,
