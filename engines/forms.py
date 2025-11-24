@@ -29,7 +29,10 @@ def render_country_form(
 
     values: Dict = {"country_code": code}
 
-    st.markdown(f"**{_section_title(t(translations, 'section_location_contract'))}**")
+    st.markdown(
+        f"<div style='margin-top:8px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_location_contract'))}</div>",
+        unsafe_allow_html=True,
+    )
     col1, col2 = st.columns(2)
     if allow_country_select:
         selected_label = col1.selectbox(
@@ -56,7 +59,10 @@ def render_country_form(
     )
 
     # Base de cálculo
-    st.markdown(f"**{_section_title(t(translations, 'section_base_calc'))}**")
+    st.markdown(
+        f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_base_calc'))}</div>",
+        unsafe_allow_html=True,
+    )
     col1, col2, col3 = st.columns(3)
     values["base_salary"] = col1.number_input(
         t(translations, "base_salary_label"),
@@ -79,7 +85,10 @@ def render_country_form(
     )
 
     # Descontos
-    st.markdown(f"**{_section_title(t(translations, 'section_discounts'))}**")
+    st.markdown(
+        f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_discounts'))}</div>",
+        unsafe_allow_html=True,
+    )
     col1, col2, col3 = st.columns(3)
     values["other_discounts"] = col1.number_input(
         t(translations, "other_discounts_label"),
@@ -102,7 +111,10 @@ def render_country_form(
     )
 
     # Previdência privada
-    st.markdown(f"**{_section_title(t(translations, 'section_private_pension'))}**")
+    st.markdown(
+        f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_private_pension'))}</div>",
+        unsafe_allow_html=True,
+    )
     col1, col2, col3 = st.columns(3)
     pension_options = cfg.extras.get("previdencia", ["PGBL", "VGBL", "FGBL"])
     values["pension_type"] = col1.selectbox(
@@ -127,7 +139,10 @@ def render_country_form(
     _render_country_specific_fields(code, cfg, translations, values, prefix)
 
     # Bônus
-    st.markdown(f"**{_section_title(t(translations, 'section_bonus'))}**")
+    st.markdown(
+        f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_bonus'))}</div>",
+        unsafe_allow_html=True,
+    )
     col1, col2, col3 = st.columns(3)
     values["bonus_percent"] = col1.number_input(
         t(translations, "bonus_percent_label"),
@@ -161,7 +176,10 @@ def _render_country_specific_fields(
 ) -> None:
     """Small helper to inject country specific inputs."""
     if country_code == "cl":
-        st.markdown(f"**{_section_title(t(translations, 'section_social_security'))}**")
+        st.markdown(
+            f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_social_security'))}</div>",
+            unsafe_allow_html=True,
+        )
         col1, col2, col3 = st.columns(3)
         values["health_option"] = col1.selectbox(
             t(translations, "health_label"),
@@ -178,7 +196,10 @@ def _render_country_specific_fields(
         )
         values["other_discounts"] = values.get("other_discounts", 0)
     elif country_code == "ar":
-        st.markdown(f"**{_section_title(t(translations, 'section_social_security'))}**")
+        st.markdown(
+            f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_social_security'))}</div>",
+            unsafe_allow_html=True,
+        )
         col1, col2 = st.columns(2)
         values["jubilacion"] = col1.number_input(
             t(translations, "jubilacion_label"),
@@ -197,7 +218,10 @@ def _render_country_specific_fields(
             key=f"{prefix}_obra",
         )
     elif country_code == "co":
-        st.markdown(f"**{_section_title(t(translations, 'section_social_security'))}**")
+        st.markdown(
+            f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_social_security'))}</div>",
+            unsafe_allow_html=True,
+        )
         col1, col2, col3 = st.columns(3)
         values["city"] = col1.text_input(t(translations, "city_label"), key=f"{prefix}_city")
         values["contract_type"] = col2.selectbox(
@@ -213,7 +237,10 @@ def _render_country_specific_fields(
             key=f"{prefix}_solidarity",
         )
     elif country_code == "mx":
-        st.markdown(f"**{_section_title(t(translations, 'section_social_security'))}**")
+        st.markdown(
+            f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_social_security'))}</div>",
+            unsafe_allow_html=True,
+        )
         col1, col2, col3 = st.columns(3)
         values["state"] = col1.selectbox(
             t(translations, "state_label"),
@@ -237,7 +264,10 @@ def _render_country_specific_fields(
             key=f"{prefix}_riesgo",
         )
     elif country_code == "us":
-        st.markdown(f"**{_section_title(t(translations, 'section_tax'))}**")
+        st.markdown(
+            f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_tax'))}</div>",
+            unsafe_allow_html=True,
+        )
         col1, col2, col3 = st.columns(3)
         values["state"] = col1.selectbox(
             t(translations, "state_label"),
@@ -256,7 +286,10 @@ def _render_country_specific_fields(
             key=f"{prefix}_withholding",
         )
     elif country_code == "ca":
-        st.markdown(f"**{_section_title(t(translations, 'section_tax'))}**")
+        st.markdown(
+            f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_tax'))}</div>",
+            unsafe_allow_html=True,
+        )
         col1, col2, col3 = st.columns(3)
         values["province"] = col1.selectbox(
             t(translations, "province_label"),
