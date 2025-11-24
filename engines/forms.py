@@ -37,8 +37,15 @@ def render_country_form(
         unsafe_allow_html=True,
     )
 
-    # Seleciona país na primeira coluna, única instância
-    selected_label = st.selectbox(
+    # Primeira linha: país + campos variáveis por país (país na primeira coluna)
+    if current_code == "ca":
+        country_col, province_col, contract_col, adj_col = st.columns([1, 1, 1, 1])
+    elif current_code in ("co", "mx", "us"):
+        country_col, second_col, contract_col = st.columns([1, 1, 1])
+    else:
+        country_col, contract_col = st.columns([1, 1])
+
+    selected_label = country_col.selectbox(
         t(translations, "country_label"),
         labels,
         index=default_idx,
@@ -52,9 +59,7 @@ def render_country_form(
     k = lambda name: f"{form_key}_{name}"
     values: Dict = {"country_code": current_code, "country_label": selected_label}
 
-    # Primeira linha: campos variáveis por país
     if current_code == "ca":
-        province_col, contract_col, adj_col = st.columns([1, 1, 1])
         values["province"] = province_col.selectbox(
             t(translations, "province_label"),
             cfg.extras.get("provinces", []),
@@ -72,7 +77,6 @@ def render_country_form(
             key=k("prov_adj"),
         )
     elif current_code == "co":
-        second_col, contract_col = st.columns([1, 1])
         values["city"] = second_col.text_input(t(translations, "city_label"), key=k("city"))
         values["contract_type"] = contract_col.selectbox(
             t(translations, "contract_label"),
@@ -80,7 +84,6 @@ def render_country_form(
             key=k("contract"),
         )
     elif current_code == "mx":
-        second_col, contract_col = st.columns([1, 1])
         values["state"] = second_col.selectbox(
             t(translations, "state_label"),
             cfg.extras.get("estados", []),
@@ -92,7 +95,6 @@ def render_country_form(
             key=k("contract"),
         )
     elif current_code == "us":
-        second_col, contract_col = st.columns([1, 1])
         values["state"] = second_col.selectbox(
             t(translations, "state_label"),
             cfg.extras.get("states", []),
