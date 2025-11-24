@@ -3,8 +3,12 @@ body, html {
     margin: 0;
     padding: 0;
     font-family: 'Inter', sans-serif;
-    background: #F5F5F7;
+    background: #FFFFFF;
     color: #222222;
+}
+
+.main .block-container {
+    background: #FFFFFF;
 }
 
 /* Page shell */
@@ -87,6 +91,9 @@ body, html {
 .result-table {
     width: 100%;
     border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #E0E0E0;
 }
 
 .result-table th, .result-table td {
@@ -97,6 +104,7 @@ body, html {
 .result-table th {
     text-align: left;
     font-weight: 600;
+    background: #F1F1F1;
 }
 
 .result-table td:nth-child(2) {
@@ -133,6 +141,9 @@ body, html {
 [data-testid="stSidebar"] {
     background: #FFFFFF;
     border-right: 1px solid #E0E0E0;
+    resize: none !important;
+    min-width: 280px;
+    max-width: 320px;
 }
 
 /* Responsiveness */
@@ -140,4 +151,8 @@ body, html {
     .field-row {
         flex-direction: column;
     }
+}
+
+[data-testid="stSidebarNav"] {
+    display: none;
 }

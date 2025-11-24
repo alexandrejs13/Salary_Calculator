@@ -7,6 +7,13 @@ def format_currency(value: float, currency: str) -> str:
     return f"{currency} {value:,.2f}"
 
 
+def _capitalize_first(text: str) -> str:
+    if not text:
+        return text
+    lowered = text.lower()
+    return lowered[0].upper() + lowered[1:]
+
+
 def render_three_column_table(
     title: str,
     rows: List[Dict],
@@ -26,16 +33,16 @@ def render_three_column_table(
     )
     for row in rows:
         cls = "credit" if row.get("kind") == "credit" and row.get("value", 0) >= 0 else "debit"
-        value = format_currency(row['value'], currency)
+        value = format_currency(row["value"], currency)
         table_html.append(
             "<tr>"
-            f"<td class='{cls}'>{row['description']}</td>"
+            f"<td>{row['description']}</td>"
             f"<td>{row['percent']}%</td>"
             f"<td class='{cls}'>{value}</td>"
             "</tr>"
         )
     table_html.append(
-        f"<tr class='final-row'><td>{final_label}</td><td></td><td>{format_currency(final_value, currency)}</td></tr>"
+        f"<tr class='final-row'><td>{_capitalize_first(final_label)}</td><td></td><td>{format_currency(final_value, currency)}</td></tr>"
     )
     table_html.append("</table>")
     st.markdown("\n".join(table_html), unsafe_allow_html=True)
