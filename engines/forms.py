@@ -30,7 +30,7 @@ def render_country_form(
     values: Dict = {"country_code": code}
 
     st.markdown(
-        f"<div style='margin-top:8px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_location_contract'))}</div>",
+        f"<div style='margin-top:6px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_location_contract'))}</div>",
         unsafe_allow_html=True,
     )
     col1, col2 = st.columns(2)
@@ -60,7 +60,7 @@ def render_country_form(
 
     # Base de cálculo
     st.markdown(
-        f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_base_calc'))}</div>",
+        f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_base_calc'))}</div>",
         unsafe_allow_html=True,
     )
     col1, col2, col3 = st.columns(3)
@@ -86,7 +86,7 @@ def render_country_form(
 
     # Descontos
     st.markdown(
-        f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_discounts'))}</div>",
+        f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_discounts'))}</div>",
         unsafe_allow_html=True,
     )
     col1, col2, col3 = st.columns(3)
@@ -112,7 +112,7 @@ def render_country_form(
 
     # Previdência privada
     st.markdown(
-        f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_private_pension'))}</div>",
+        f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_private_pension'))}</div>",
         unsafe_allow_html=True,
     )
     col1, col2, col3 = st.columns(3)
@@ -140,7 +140,7 @@ def render_country_form(
 
     # Bônus
     st.markdown(
-        f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_bonus'))}</div>",
+        f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_bonus'))}</div>",
         unsafe_allow_html=True,
     )
     col1, col2, col3 = st.columns(3)
@@ -177,7 +177,7 @@ def _render_country_specific_fields(
     """Small helper to inject country specific inputs."""
     if country_code == "cl":
         st.markdown(
-            f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_social_security'))}</div>",
+            f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_social_security'))}</div>",
             unsafe_allow_html=True,
         )
         col1, col2, col3 = st.columns(3)
@@ -197,7 +197,7 @@ def _render_country_specific_fields(
         values["other_discounts"] = values.get("other_discounts", 0)
     elif country_code == "ar":
         st.markdown(
-            f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_social_security'))}</div>",
+            f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_social_security'))}</div>",
             unsafe_allow_html=True,
         )
         col1, col2 = st.columns(2)
@@ -219,7 +219,7 @@ def _render_country_specific_fields(
         )
     elif country_code == "co":
         st.markdown(
-            f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_social_security'))}</div>",
+            f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_social_security'))}</div>",
             unsafe_allow_html=True,
         )
         col1, col2, col3 = st.columns(3)
@@ -238,7 +238,7 @@ def _render_country_specific_fields(
         )
     elif country_code == "mx":
         st.markdown(
-            f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_social_security'))}</div>",
+            f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_social_security'))}</div>",
             unsafe_allow_html=True,
         )
         col1, col2, col3 = st.columns(3)
@@ -265,7 +265,7 @@ def _render_country_specific_fields(
         )
     elif country_code == "us":
         st.markdown(
-            f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_tax'))}</div>",
+            f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_tax'))}</div>",
             unsafe_allow_html=True,
         )
         col1, col2, col3 = st.columns(3)
@@ -287,7 +287,7 @@ def _render_country_specific_fields(
         )
     elif country_code == "ca":
         st.markdown(
-            f"<div style='margin-top:12px;margin-bottom:4px;font-weight:700'>{_section_title(t(translations, 'section_tax'))}</div>",
+            f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_tax'))}</div>",
             unsafe_allow_html=True,
         )
         col1, col2, col3 = st.columns(3)
