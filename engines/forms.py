@@ -20,40 +20,95 @@ def render_country_form(
     allow_country_select: bool = False,
 ) -> Dict:
     """Render dynamic form for a country and return captured inputs."""
-    code = country_code
+    code = st.session_state.get("page1_country_code", country_code)
     label_to_code = {cfg.label: cfg.code for cfg in COUNTRIES.values()}
     labels = list(label_to_code.keys())
     default_idx = labels.index(COUNTRIES.get(code, DEFAULT_COUNTRY).label) if code in [c.code for c in COUNTRIES.values()] else 0
-    selected_label = None
 
-    # Seletor de país
+    # Seção de localização
     st.markdown(
         f"<div style='margin-top:6px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_location_contract'))}</div>",
         unsafe_allow_html=True,
     )
-    if allow_country_select:
-        selected_label = st.selectbox(
-            t(translations, "country_label"),
-            labels,
-            index=default_idx,
-            key=f"{prefix}_country_select_inside",
-        )
-        code = label_to_code[selected_label]
-        st.session_state["page1_country_code"] = code
+
+    # Layout por país (primeira linha)
+    if code == "ca":
+        cols = st.columns([1, 1, 1, 1])
+    elif code in ("co", "mx", "us"):
+        cols = st.columns([1, 1, 1])
+    else:
+        cols = st.columns([1, 1])
+
+    selected_label = cols[0].selectbox(
+        t(translations, "country_label"),
+        labels,
+        index=default_idx,
+        key="page1_country_select_inside",
+    )
+    code = label_to_code.get(selected_label, code)
+    st.session_state["page1_country_code"] = code
     cfg: CountryConfig = COUNTRIES.get(code, DEFAULT_COUNTRY)
     form_key = f"{prefix}_{code}"
     k = lambda name: f"{form_key}_{name}"
-    values: Dict = {"country_code": code}
-    values["country_label"] = selected_label if selected_label else cfg.label
-    st.session_state["page1_country_code"] = values["country_code"]
+    values: Dict = {"country_code": code, "country_label": selected_label}
 
-    # Primeira linha: país + campos variáveis por país
     if code == "ca":
-        province_col, contract_col, adj_col = st.columns(3)
-    elif code in ("co", "mx", "us"):
-        second_col, contract_col = st.columns(2)
+        country_col, province_col, contract_col, adj_col = cols
+        values["province"] = province_col.selectbox(
+            t(translations, "province_label"),
+            cfg.extras.get("provinces", []),
+            key=k("province"),
+        )
+        values["contract_type"] = contract_col.selectbox(
+            t(translations, "contract_label"),
+            cfg.contracts,
+            key=k("contract"),
+        )
+        values["other_adjustments"] = adj_col.number_input(
+            t(translations, "provincial_adjustments_label"),
+            min_value=0.0,
+            step=50.0,
+            key=k("prov_adj"),
+        )
+    elif code == "co":
+        country_col, second_col, contract_col = cols
+        values["city"] = second_col.text_input(t(translations, "city_label"), key=k("city"))
+        values["contract_type"] = contract_col.selectbox(
+            t(translations, "contract_label"),
+            cfg.contracts,
+            key=k("contract"),
+        )
+    elif code == "mx":
+        country_col, second_col, contract_col = cols
+        values["state"] = second_col.selectbox(
+            t(translations, "state_label"),
+            cfg.extras.get("estados", []),
+            key=k("state"),
+        )
+        values["contract_type"] = contract_col.selectbox(
+            t(translations, "contract_label"),
+            cfg.contracts,
+            key=k("contract"),
+        )
+    elif code == "us":
+        country_col, second_col, contract_col = cols
+        values["state"] = second_col.selectbox(
+            t(translations, "state_label"),
+            cfg.extras.get("states", []),
+            key=k("state"),
+        )
+        values["contract_type"] = contract_col.selectbox(
+            t(translations, "contract_label"),
+            cfg.contracts,
+            key=k("contract"),
+        )
     else:
-        contract_col = st.columns(1)[0]
+        country_col, contract_col = cols
+        values["contract_type"] = contract_col.selectbox(
+            t(translations, "contract_label"),
+            cfg.contracts,
+            key=k("contract"),
+        )
 
     if code == "ca":
         values["province"] = province_col.selectbox(
