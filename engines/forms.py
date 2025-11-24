@@ -63,7 +63,7 @@ def render_country_form(
         f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_base_calc'))}</div>",
         unsafe_allow_html=True,
     )
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     values["base_salary"] = col1.number_input(
         t(translations, "base_salary_label"),
         min_value=0.0,
@@ -76,7 +76,14 @@ def render_country_form(
         disabled=True,
         key=f"{prefix}_frequency",
     )
-    values["other_additions"] = col3.number_input(
+    computed_annual = values["base_salary"] * cfg.annual_frequency
+    col3.text_input(
+        "Salário Anual",
+        value=f"{computed_annual:,.2f}",
+        disabled=True,
+        key=f"{prefix}_annual_salary",
+    )
+    values["other_additions"] = col4.number_input(
         t(translations, "other_additions_label"),
         min_value=0.0,
         step=50.0,
