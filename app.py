@@ -14,8 +14,7 @@ def main():
     country_cfg = COUNTRIES.get(current_code, DEFAULT_COUNTRY)
 
     render_title_with_flag(translations, country_cfg)
-    st.markdown("#### Parâmetros de cálculo da remuneração")
-    st.markdown("---")
+    st.markdown("#### Parâmetros de cálculo da remuneração\n<hr style='margin-top:4px;margin-bottom:16px'/>", unsafe_allow_html=True)
 
     values = render_country_form(country_cfg.code, translations, allow_country_select=True)
     st.session_state["page1_country_code"] = values.get("country_code", current_code)
@@ -42,6 +41,7 @@ def main():
                     "value": translations.get("table_value", "Valor"),
                 },
             )
+            render_extra_info(result.extras, translations, result.currency, mode="monthly")
         with tabs[1]:
             render_three_column_table(
                 translations.get("tab_annual", "Remuneração Anual"),
@@ -54,6 +54,7 @@ def main():
                     "value": translations.get("table_value", "Valor"),
                 },
             )
+            render_extra_info(result.extras, translations, result.currency, mode="annual")
         with tabs[2]:
             render_three_column_table(
                 translations.get("tab_composition", "Composição"),
@@ -66,7 +67,6 @@ def main():
                     "value": translations.get("table_value", "Valor"),
                 },
             )
-        render_extra_info(result.extras, translations, result.currency)
 
 
 if __name__ == "__main__":

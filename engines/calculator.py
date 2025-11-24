@@ -192,9 +192,14 @@ def calculate_compensation(country_code: str, inputs: Dict) -> CalculationResult
         {"description": "Bônus Anual", "value": bonus_value, "percent": _pct(bonus_value, total_comp), "kind": "credit"},
     ]
 
+    pension_employer_input = float(inputs.get("pension_employer") or 0)
     extras = {
-        "fgts": monthly_gross * 0.08 * cfg.annual_frequency if country_code == "br" else 0,
-        "pension_private": (float(inputs.get("pension_employee") or 0) + float(inputs.get("pension_employer") or 0)) * cfg.annual_frequency,
+        "fgts_monthly": monthly_gross * 0.08 if country_code == "br" else 0,
+        "fgts_annual": monthly_gross * 0.08 * cfg.annual_frequency if country_code == "br" else 0,
+        "pension_employer_monthly": pension_employer_input,
+        "pension_employer_annual": pension_employer_input * cfg.annual_frequency,
+        "employer_cost_monthly": tax_data["employer_cost"],
+        "employer_cost_annual": tax_data["employer_cost"] * cfg.annual_frequency,
         "employer_cost": tax_data["employer_cost"] * cfg.annual_frequency,
         "notes": tax_data["notes"],
     }

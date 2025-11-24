@@ -49,20 +49,22 @@ def render_three_column_table(
     st.markdown("\n".join(table_html), unsafe_allow_html=True)
 
 
-def render_extra_info(extras: Dict, translations: Dict[str, str], currency: str) -> None:
-    fgts = extras.get("fgts", 0)
-    pension = extras.get("pension_private", 0)
-    employer_cost = extras.get("employer_cost", 0)
-    notes = extras.get("notes", [])
+def render_extra_info(extras: Dict, translations: Dict[str, str], currency: str, mode: str = "monthly") -> None:
+    fgts_monthly = extras.get("fgts_monthly", 0)
+    fgts_annual = extras.get("fgts_annual", 0)
+    pension_emp_monthly = extras.get("pension_employer_monthly", 0)
+    pension_emp_annual = extras.get("pension_employer_annual", 0)
 
-    if fgts or pension or employer_cost:
+    if mode == "monthly":
+        fgts = fgts_monthly
+        pension = pension_emp_monthly
+    else:
+        fgts = fgts_annual
+        pension = pension_emp_annual
+
+    if fgts or pension:
         st.markdown("<br/>", unsafe_allow_html=True)
-        st.markdown("#### " + translations.get("observations", "Observações"))
     if fgts:
-        st.markdown(f"{translations.get('fgts_info', 'FGTS')}: {format_currency(fgts, currency)}")
+        st.markdown(f"- FGTS: {format_currency(fgts, currency)}")
     if pension:
-        st.markdown(f"{translations.get('private_pension_info', 'Previdência privada')}: {format_currency(pension, currency)}")
-    if employer_cost:
-        st.markdown(f"{translations.get('employer_contrib_info', 'Encargos do empregador')}: {format_currency(employer_cost, currency)}")
-    for note in notes:
-        st.markdown(f"{note}")
+        st.markdown(f"- Previdência Privada Empregador: {format_currency(pension, currency)}")
