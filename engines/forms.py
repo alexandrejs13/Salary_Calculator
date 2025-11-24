@@ -20,7 +20,8 @@ def render_country_form(
     allow_country_select: bool = False,
 ) -> Dict:
     """Render dynamic form for a country and return captured inputs."""
-    code = st.session_state.get("page1_country_code", country_code)
+    session_code_key = f"{prefix}_country_code" if prefix else "page1_country_code"
+    code = st.session_state.get(session_code_key, country_code)
     label_to_code = {cfg.label: cfg.code for cfg in COUNTRIES.values()}
     labels = list(label_to_code.keys())
     default_idx = labels.index(COUNTRIES.get(code, DEFAULT_COUNTRY).label) if code in [c.code for c in COUNTRIES.values()] else 0
@@ -43,10 +44,10 @@ def render_country_form(
         t(translations, "country_label"),
         labels,
         index=default_idx,
-        key="page1_country_select_inside",
+        key=f"{session_code_key}_select",
     )
     code = label_to_code.get(selected_label, code)
-    st.session_state["page1_country_code"] = code
+    st.session_state[session_code_key] = code
     cfg: CountryConfig = COUNTRIES.get(code, DEFAULT_COUNTRY)
     form_key = f"{prefix}_{code}"
     k = lambda name: f"{form_key}_{name}"
@@ -110,23 +111,6 @@ def render_country_form(
             key=k("contract"),
         )
 
-    if code == "ca":
-        values["province"] = province_col.selectbox(
-            t(translations, "province_label"),
-            cfg.extras.get("provinces", []),
-            key=k("province"),
-        )
-        values["contract_type"] = contract_col.selectbox(
-            t(translations, "contract_label"),
-            cfg.contracts,
-            key=k("contract"),
-        )
-        values["other_adjustments"] = adj_col.number_input(
-            t(translations, "provincial_adjustments_label"),
-            min_value=0.0,
-            step=50.0,
-            key=k("prov_adj"),
-        )
     elif code == "co":
         values["city"] = second_col.text_input(t(translations, "city_label"), key=k("city"))
         values["contract_type"] = contract_col.selectbox(
