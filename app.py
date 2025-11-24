@@ -21,7 +21,7 @@ def main():
     values = render_country_form(country_cfg.code, translations, allow_country_select=True)
     st.session_state["page1_country_code"] = values.get("country_code", current_code)
 
-    st.markdown("<hr style='margin-top:18px;margin-bottom:16px'/>", unsafe_allow_html=True)
+    st.markdown("<hr style='margin-top:6px;margin-bottom:24px'/>", unsafe_allow_html=True)
 
     if st.button(t(translations, "calculate_button")):
         result = calculate_compensation(values.get("country_code", country_cfg.code), values)

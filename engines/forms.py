@@ -31,7 +31,7 @@ def render_country_form(
         f"<div style='margin-top:6px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_location_contract'))}</div>",
         unsafe_allow_html=True,
     )
-    cols = st.columns(4)
+    cols = st.columns([1, 1, 1, 1])
 
     if allow_country_select:
         selected_label = cols[0].selectbox(
@@ -106,7 +106,7 @@ def render_country_form(
         f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_base_calc'))}</div>",
         unsafe_allow_html=True,
     )
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
     values["base_salary"] = col1.number_input(
         t(translations, "base_salary_label"),
         min_value=0.0,
@@ -140,11 +140,11 @@ def render_country_form(
         unsafe_allow_html=True,
     )
     if code in ("cl", "us"):
-        col1, col2, col3, col4, col5 = st.columns(5)
+        col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
     elif code == "ca":
-        col1, col2, col3, col4 = st.columns(4)
+        col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
     else:
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3 = st.columns([1, 1, 1])
 
     values["other_discounts"] = col1.number_input(
         t(translations, "other_discounts_label"),
