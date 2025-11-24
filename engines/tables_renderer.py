@@ -56,12 +56,13 @@ def render_extra_info(extras: Dict, translations: Dict[str, str], currency: str)
     notes = extras.get("notes", [])
 
     if fgts or pension or employer_cost:
+        st.markdown("<br/>", unsafe_allow_html=True)
         st.markdown("#### " + translations.get("observations", "Observações"))
     if fgts:
-        st.markdown(f"- {translations.get('fgts_info', 'FGTS')}: {format_currency(fgts, currency)}")
+        st.markdown(f"{translations.get('fgts_info', 'FGTS')}: {format_currency(fgts, currency)}")
     if pension:
-        st.markdown(f"- {translations.get('private_pension_info', 'Previdência privada')}: {format_currency(pension, currency)}")
+        st.markdown(f"{translations.get('private_pension_info', 'Previdência privada')}: {format_currency(pension, currency)}")
     if employer_cost:
-        st.markdown(f"- {translations.get('employer_contrib_info', 'Encargos do empregador')}: {format_currency(employer_cost, currency)}")
+        st.markdown(f"{translations.get('employer_contrib_info', 'Encargos do empregador')}: {format_currency(employer_cost, currency)}")
     for note in notes:
-        st.markdown(f"- {note}")
+        st.markdown(f"{note}")
