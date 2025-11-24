@@ -31,19 +31,10 @@ def render_country_form(
         f"<div style='margin-top:6px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_location_contract'))}</div>",
         unsafe_allow_html=True,
     )
-    # Define colunas iniciais conforme país atual
-    if allow_country_select:
-        if code == "ca":
-            cols = st.columns(4)
-        elif code in ("co", "mx", "us"):
-            cols = st.columns(3)
-        else:
-            cols = st.columns(2)
-    else:
-        cols = st.columns(2)
+    cols = st.columns(4)
 
     if allow_country_select:
-        selected_label = st.selectbox(
+        selected_label = cols[0].selectbox(
             t(translations, "country_label"),
             labels,
             index=default_idx,
@@ -75,36 +66,36 @@ def render_country_form(
             key=k("prov_adj"),
         )
     elif code == "co":
-        values["city"] = cols[0].text_input(t(translations, "city_label"), key=k("city"))
-        values["contract_type"] = cols[1].selectbox(
+        values["city"] = cols[1].text_input(t(translations, "city_label"), key=k("city"))
+        values["contract_type"] = cols[2].selectbox(
             t(translations, "contract_label"),
             cfg.contracts,
             key=k("contract"),
         )
     elif code == "mx":
-        values["state"] = cols[0].selectbox(
+        values["state"] = cols[1].selectbox(
             t(translations, "state_label"),
             cfg.extras.get("estados", []),
             key=k("state"),
         )
-        values["contract_type"] = cols[1].selectbox(
+        values["contract_type"] = cols[2].selectbox(
             t(translations, "contract_label"),
             cfg.contracts,
             key=k("contract"),
         )
     elif code == "us":
-        values["state"] = cols[0].selectbox(
+        values["state"] = cols[1].selectbox(
             t(translations, "state_label"),
             cfg.extras.get("states", []),
             key=k("state"),
         )
-        values["contract_type"] = cols[1].selectbox(
+        values["contract_type"] = cols[2].selectbox(
             t(translations, "contract_label"),
             cfg.contracts,
             key=k("contract"),
         )
     else:
-        values["contract_type"] = cols[0].selectbox(
+        values["contract_type"] = cols[1].selectbox(
             t(translations, "contract_label"),
             cfg.contracts,
             key=k("contract"),
