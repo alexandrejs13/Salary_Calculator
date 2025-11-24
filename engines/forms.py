@@ -6,19 +6,49 @@ from .countries import COUNTRIES, CountryConfig, DEFAULT_COUNTRY
 from .i18n import t
 
 
-def render_country_form(country_code: str, translations: Dict[str, str], prefix: str = "") -> Dict:
-    """Render dynamic form for a country and return captured inputs."""
-    cfg: CountryConfig = COUNTRIES.get(country_code, DEFAULT_COUNTRY)
-    values: Dict = {"country_code": country_code}
+def _section_title(text: str) -> str:
+    if not text:
+        return ""
+    lowered = text.lower()
+    return lowered[0].upper() + lowered[1:]
 
-    st.markdown(f"### {t(translations, 'section_location_contract')}")
+
+def render_country_form(
+    country_code: str,
+    translations: Dict[str, str],
+    prefix: str = "",
+    allow_country_select: bool = False,
+) -> Dict:
+    """Render dynamic form for a country and return captured inputs."""
+    code = country_code
+    label_to_code = {cfg.label: cfg.code for cfg in COUNTRIES.values()}
+    labels = list(label_to_code.keys())
+    default_idx = labels.index(COUNTRIES.get(code, DEFAULT_COUNTRY).label) if code in [c.code for c in COUNTRIES.values()] else 0
+    selected_label = None
+
+    values: Dict = {"country_code": code}
+
+    st.markdown(f"**{_section_title(t(translations, 'section_location_contract'))}**")
     col1, col2 = st.columns(2)
-    values["country_label"] = col1.text_input(
-        t(translations, "country_label"),
-        value=cfg.label,
-        disabled=True,
-        key=f"{prefix}_country_label",
-    )
+    if allow_country_select:
+        selected_label = col1.selectbox(
+            t(translations, "country_label"),
+            labels,
+            index=default_idx,
+            key=f"{prefix}_country_select_inside",
+        )
+        code = label_to_code[selected_label]
+        values["country_code"] = code
+        values["country_label"] = selected_label
+        cfg: CountryConfig = COUNTRIES.get(code, DEFAULT_COUNTRY)
+    else:
+        values["country_label"] = col1.text_input(
+            t(translations, "country_label"),
+            value=cfg.label,
+            disabled=True,
+            key=f"{prefix}_country_label",
+        )
+        cfg: CountryConfig = COUNTRIES.get(code, DEFAULT_COUNTRY)
     values["contract_type"] = col2.selectbox(
         t(translations, "contract_label"),
         cfg.contracts,
@@ -26,7 +56,7 @@ def render_country_form(country_code: str, translations: Dict[str, str], prefix:
     )
 
     # Base de cálculo
-    st.markdown(f"### {t(translations, 'section_base_calc')}")
+    st.markdown(f"**{_section_title(t(translations, 'section_base_calc'))}**")
     col1, col2, col3 = st.columns(3)
     values["base_salary"] = col1.number_input(
         t(translations, "base_salary_label"),
@@ -49,7 +79,7 @@ def render_country_form(country_code: str, translations: Dict[str, str], prefix:
     )
 
     # Descontos
-    st.markdown(f"### {t(translations, 'section_discounts')}")
+    st.markdown(f"**{_section_title(t(translations, 'section_discounts'))}**")
     col1, col2, col3 = st.columns(3)
     values["other_discounts"] = col1.number_input(
         t(translations, "other_discounts_label"),
@@ -72,7 +102,7 @@ def render_country_form(country_code: str, translations: Dict[str, str], prefix:
     )
 
     # Previdência privada
-    st.markdown(f"### {t(translations, 'section_private_pension')}")
+    st.markdown(f"**{_section_title(t(translations, 'section_private_pension'))}**")
     col1, col2, col3 = st.columns(3)
     pension_options = cfg.extras.get("previdencia", ["PGBL", "VGBL", "FGBL"])
     values["pension_type"] = col1.selectbox(
@@ -94,10 +124,10 @@ def render_country_form(country_code: str, translations: Dict[str, str], prefix:
     )
 
     # Campos específicos por país
-    _render_country_specific_fields(country_code, cfg, translations, values, prefix)
+    _render_country_specific_fields(code, cfg, translations, values, prefix)
 
     # Bônus
-    st.markdown(f"### {t(translations, 'section_bonus')}")
+    st.markdown(f"**{_section_title(t(translations, 'section_bonus'))}**")
     col1, col2, col3 = st.columns(3)
     values["bonus_percent"] = col1.number_input(
         t(translations, "bonus_percent_label"),
@@ -131,7 +161,7 @@ def _render_country_specific_fields(
 ) -> None:
     """Small helper to inject country specific inputs."""
     if country_code == "cl":
-        st.markdown(f"### {t(translations, 'section_social_security')}")
+        st.markdown(f"**{_section_title(t(translations, 'section_social_security'))}**")
         col1, col2, col3 = st.columns(3)
         values["health_option"] = col1.selectbox(
             t(translations, "health_label"),
@@ -148,7 +178,7 @@ def _render_country_specific_fields(
         )
         values["other_discounts"] = values.get("other_discounts", 0)
     elif country_code == "ar":
-        st.markdown(f"### {t(translations, 'section_social_security')}")
+        st.markdown(f"**{_section_title(t(translations, 'section_social_security'))}**")
         col1, col2 = st.columns(2)
         values["jubilacion"] = col1.number_input(
             t(translations, "jubilacion_label"),
@@ -167,7 +197,7 @@ def _render_country_specific_fields(
             key=f"{prefix}_obra",
         )
     elif country_code == "co":
-        st.markdown(f"### {t(translations, 'section_social_security')}")
+        st.markdown(f"**{_section_title(t(translations, 'section_social_security'))}**")
         col1, col2, col3 = st.columns(3)
         values["city"] = col1.text_input(t(translations, "city_label"), key=f"{prefix}_city")
         values["contract_type"] = col2.selectbox(
@@ -183,7 +213,7 @@ def _render_country_specific_fields(
             key=f"{prefix}_solidarity",
         )
     elif country_code == "mx":
-        st.markdown(f"### {t(translations, 'section_social_security')}")
+        st.markdown(f"**{_section_title(t(translations, 'section_social_security'))}**")
         col1, col2, col3 = st.columns(3)
         values["state"] = col1.selectbox(
             t(translations, "state_label"),
@@ -207,7 +237,7 @@ def _render_country_specific_fields(
             key=f"{prefix}_riesgo",
         )
     elif country_code == "us":
-        st.markdown(f"### {t(translations, 'section_tax')}")
+        st.markdown(f"**{_section_title(t(translations, 'section_tax'))}**")
         col1, col2, col3 = st.columns(3)
         values["state"] = col1.selectbox(
             t(translations, "state_label"),
@@ -226,7 +256,7 @@ def _render_country_specific_fields(
             key=f"{prefix}_withholding",
         )
     elif country_code == "ca":
-        st.markdown(f"### {t(translations, 'section_tax')}")
+        st.markdown(f"**{_section_title(t(translations, 'section_tax'))}**")
         col1, col2, col3 = st.columns(3)
         values["province"] = col1.selectbox(
             t(translations, "province_label"),
