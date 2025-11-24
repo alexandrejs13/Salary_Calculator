@@ -1,0 +1,78 @@
+import streamlit as st
+
+from engines.calculator import calculate_compensation
+from engines.countries import COUNTRIES, DEFAULT_COUNTRY, find_country_by_label
+from engines.forms import render_country_form
+from engines.i18n import t
+from engines.tables_renderer import render_extra_info, render_three_column_table
+from engines.ui import init_page, render_title_with_flag
+
+
+def main():
+    translations = init_page("page_01_title")
+    country_names = [cfg.label for cfg in COUNTRIES.values()]
+    selected_country = st.selectbox(
+        translations.get("country_label", "País"),
+        country_names,
+        index=0,
+        key="page1_country_select",
+    )
+    country_cfg = find_country_by_label(selected_country) or DEFAULT_COUNTRY
+
+    render_title_with_flag(translations, country_cfg)
+
+    st.markdown("<div class='app-container'>", unsafe_allow_html=True)
+    values = render_country_form(country_cfg.code, translations)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    if st.button(t(translations, "calculate_button")):
+        result = calculate_compensation(country_cfg.code, values)
+        tabs = st.tabs(
+            [
+                translations.get("tab_monthly", "Remuneração Mensal"),
+                translations.get("tab_annual", "Remuneração Anual"),
+                translations.get("tab_composition", "Composição"),
+            ]
+        )
+
+        with tabs[0]:
+            render_three_column_table(
+                translations.get("tab_monthly", "Remuneração Mensal"),
+                result.monthly_rows,
+                translations.get("final_monthly", "REMUNERAÇÃO MENSAL LÍQUIDA"),
+                result.currency,
+                {
+                    "description": translations.get("table_description", "Descrição"),
+                    "percent": translations.get("table_percent", "%"),
+                    "value": translations.get("table_value", "Valor"),
+                },
+            )
+        with tabs[1]:
+            render_three_column_table(
+                translations.get("tab_annual", "Remuneração Anual"),
+                result.annual_rows,
+                translations.get("final_annual", "REMUNERAÇÃO ANUAL LÍQUIDA"),
+                result.currency,
+                {
+                    "description": translations.get("table_description", "Descrição"),
+                    "percent": translations.get("table_percent", "%"),
+                    "value": translations.get("table_value", "Valor"),
+                },
+            )
+        with tabs[2]:
+            render_three_column_table(
+                translations.get("tab_composition", "Composição"),
+                result.composition_rows,
+                translations.get("final_total_comp", "TOTAL REMUNERAÇÃO ANUAL"),
+                result.currency,
+                {
+                    "description": translations.get("table_description", "Descrição"),
+                    "percent": translations.get("table_percent", "%"),
+                    "value": translations.get("table_value", "Valor"),
+                },
+            )
+        render_extra_info(result.extras, translations, result.currency)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,59 @@
+from typing import Dict, List
+
+import streamlit as st
+
+
+def format_currency(value: float, currency: str) -> str:
+    return f"{currency} {value:,.2f}"
+
+
+def render_three_column_table(
+    title: str,
+    rows: List[Dict],
+    final_label: str,
+    currency: str,
+    columns_labels: Dict[str, str],
+) -> None:
+    st.markdown(f"**{title}**")
+    final_value = sum(r["value"] for r in rows)
+    table_html = ["<table class='result-table'>"]
+    table_html.append(
+        "<tr>"
+        f"<th>{columns_labels.get('description', 'Descrição')}</th>"
+        f"<th>{columns_labels.get('percent', '%')}</th>"
+        f"<th>{columns_labels.get('value', 'Valor')}</th>"
+        "</tr>"
+    )
+    for row in rows:
+        cls = "credit" if row.get("kind") == "credit" and row.get("value", 0) >= 0 else "debit"
+        value = format_currency(row['value'], currency)
+        table_html.append(
+            "<tr>"
+            f"<td class='{cls}'>{row['description']}</td>"
+            f"<td>{row['percent']}%</td>"
+            f"<td class='{cls}'>{value}</td>"
+            "</tr>"
+        )
+    table_html.append(
+        f"<tr class='final-row'><td>{final_label}</td><td></td><td>{format_currency(final_value, currency)}</td></tr>"
+    )
+    table_html.append("</table>")
+    st.markdown("\n".join(table_html), unsafe_allow_html=True)
+
+
+def render_extra_info(extras: Dict, translations: Dict[str, str], currency: str) -> None:
+    fgts = extras.get("fgts", 0)
+    pension = extras.get("pension_private", 0)
+    employer_cost = extras.get("employer_cost", 0)
+    notes = extras.get("notes", [])
+
+    if fgts or pension or employer_cost:
+        st.markdown("#### " + translations.get("observations", "Observações"))
+    if fgts:
+        st.markdown(f"- {translations.get('fgts_info', 'FGTS')}: {format_currency(fgts, currency)}")
+    if pension:
+        st.markdown(f"- {translations.get('private_pension_info', 'Previdência privada')}: {format_currency(pension, currency)}")
+    if employer_cost:
+        st.markdown(f"- {translations.get('employer_contrib_info', 'Encargos do empregador')}: {format_currency(employer_cost, currency)}")
+    for note in notes:
+        st.markdown(f"- {note}")
