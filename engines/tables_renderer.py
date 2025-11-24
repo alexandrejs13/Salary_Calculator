@@ -22,7 +22,8 @@ def render_three_column_table(
     columns_labels: Dict[str, str],
 ) -> None:
     st.markdown(f"**{title}**")
-    final_value = sum(r["value"] for r in rows)
+    filtered_rows = [r for r in rows if abs(r.get("value", 0)) > 1e-9]
+    final_value = sum(r["value"] for r in filtered_rows)
     table_html = ["<table class='result-table'>"]
     table_html.append(
         "<tr>"
@@ -31,7 +32,7 @@ def render_three_column_table(
         f"<th>{columns_labels.get('value', 'Valor')}</th>"
         "</tr>"
     )
-    for row in rows:
+    for row in filtered_rows:
         cls = "credit" if row.get("kind") == "credit" and row.get("value", 0) >= 0 else "debit"
         value = format_currency(row["value"], currency)
         table_html.append(

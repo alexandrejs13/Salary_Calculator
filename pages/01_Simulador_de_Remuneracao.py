@@ -14,10 +14,8 @@ def main():
     country_cfg = COUNTRIES.get(current_code, DEFAULT_COUNTRY)
     render_title_with_flag(translations, country_cfg)
 
-    st.markdown("<div class='app-container'>", unsafe_allow_html=True)
     values = render_country_form(country_cfg.code, translations, allow_country_select=True)
     st.session_state["page1_country_code"] = values.get("country_code", current_code)
-    st.markdown("</div>", unsafe_allow_html=True)
 
     if st.button(t(translations, "calculate_button"), type="primary"):
         selected_cfg = COUNTRIES.get(values.get("country_code", current_code), country_cfg)

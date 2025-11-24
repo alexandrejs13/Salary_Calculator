@@ -139,7 +139,7 @@ body, html {
 
 /* Sidebar */
 [data-testid="stSidebar"] {
-    background: #FFFFFF;
+    background: #F1F3F5;
     border-right: 1px solid #E0E0E0;
     resize: none !important;
     min-width: 280px;
