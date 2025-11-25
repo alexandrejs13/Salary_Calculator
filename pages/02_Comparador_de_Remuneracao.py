@@ -129,10 +129,11 @@ def main():
             st.markdown(f"### {title}")
             st.markdown("\n".join(html), unsafe_allow_html=True)
 
-        st.markdown("### Comparativo Mensal")
-        build_table("Mensal", monthly_rows)
-        st.markdown("### Comparativo Anual")
-        build_table("Anual", annual_rows)
+        tab_m, tab_a = st.tabs(["Comparativo Mensal", "Comparativo Anual"])
+        with tab_m:
+            build_table("Mensal", monthly_rows)
+        with tab_a:
+            build_table("Anual", annual_rows)
 
         # Benefícios em espécie e depósitos (FGTS/AFP etc.)
         def benefits_map(res, code):
@@ -146,7 +147,7 @@ def main():
         dest_ben = benefits_map(res_dest, dest_code)
         all_labels = sorted(set(origin_ben.keys()) | set(dest_ben.keys()))
 
-        def build_benefits_table(title, origin_vals, dest_vals, annual=False):
+        def build_benefits_table(title, origin_vals, dest_vals):
             html = ["<table class='result-table'>"]
             html.append(
                 "<tr>"
@@ -157,10 +158,14 @@ def main():
                 "<th class='text-center'>Variação %</th>"
                 "</tr>"
             )
+            total_o = 0.0
+            total_d = 0.0
             for label in sorted(all_labels):
                 o_val = origin_vals.get(label, 0.0)
                 d_val = dest_vals.get(label, 0.0)
                 o_conv = convert_amount(o_val, origin_code, dest_code)
+                total_o += o_conv
+                total_d += d_val
                 diff = d_val - o_conv
                 pct = (diff / o_conv * 100) if o_conv else 0
                 cls = "credit" if diff > 0 else "debit" if diff < 0 else ""
@@ -179,6 +184,24 @@ def main():
                     f"<td class='text-center {cls}'>{pct_txt}</td>"
                     "</tr>"
                 )
+            total_diff = total_d - total_o
+            total_pct = (total_diff / total_o * 100) if total_o else 0
+            total_cls = "credit" if total_diff > 0 else "debit" if total_diff < 0 else ""
+            total_var_txt = f"{res_dest.currency} {abs(total_diff):,.2f}"
+            if total_diff > 0:
+                total_var_txt = f"+ {total_var_txt}"
+            elif total_diff < 0:
+                total_var_txt = f"- {total_var_txt}"
+            total_pct_txt = f"{total_pct:,.2f}%" if total_o else "0.00%"
+            html.append(
+                f"<tr class='final-row'>"
+                f"<td class='text-left'>Total</td>"
+                f"<td class='text-right'>{res_dest.currency} {total_o:,.2f}</td>"
+                f"<td class='text-right'>{res_dest.currency} {total_d:,.2f}</td>"
+                f"<td class='text-right {total_cls}'>{total_var_txt}</td>"
+                f"<td class='text-center {total_cls}'>{total_pct_txt}</td>"
+                f"</tr>"
+            )
             html.append("</table>")
             st.markdown("\n".join(html), unsafe_allow_html=True)
 
