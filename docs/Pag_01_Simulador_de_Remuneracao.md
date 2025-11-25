@@ -14,14 +14,15 @@ cálculo e o layout das tabelas de resultados.
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 Elementos principais:
-- Título + bandeira
+- Título + bandeira (emoji nativo)
 - Container central de 120 colunas
-- Formulário dinâmico conforme país
-- Botão "Calcular Remuneração"
+- Formulário dinâmico conforme país (seletor de país fica dentro da seção “Localização e tipo de contrato de trabalho”)
+- Botão "Calcular Remuneração" (com divisor antes do botão)
 - 3 abas de resultados:
   - Remuneração Mensal
   - Remuneração Anual
   - Composição da Remuneração
+  - Linha de benefícios informativos logo abaixo das abas Mensal/Anual (FGTS/AFP/Jubilación/Cesantías/AFORE/RRSP etc., conforme país)
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   Seção 3 — estrutura completa do formulário
@@ -35,11 +36,12 @@ REGRAS GERAIS DO FORMULÁRIO:
 1. O formulário fica dentro de um CONTAINER de 120 colunas (layout global).
 2. Cada linha tem um TÍTULO DE SEÇÃO alinhado à esquerda (ex.: LOCALIZAÇÃO).
 3. Abaixo do título da linha, as caixas de entrada são exibidas lado a lado.
-4. As caixas se distribuem automaticamente em largura proporcional.
+4. As caixas se distribuem automaticamente em largura proporcional, ocupando toda a linha (2, 3, 4 ou 5 colunas conforme o país).
 5. Labels de caixas SEM negrito.
 6. Títulos de linha COM negrito.
-7. Espaçamento vertical entre linhas: entre 16px e 24px.
-8. O botão "Calcular Remuneração" fica FORA do container, alinhado à esquerda.
+7. Espaçamento vertical entre linhas: entre 12px e 24px (mais compacto).
+8. O botão "Calcular Remuneração" fica FORA do container, alinhado à esquerda, precedido por um divisor.
+9. Campo “Salário Anual” (somente leitura) calculado automaticamente = salário base × frequência anual.
 
 SEÇÕES DO FORMULÁRIO:
 - Localização e Tipo de Contrato de Trabalho
@@ -55,6 +57,16 @@ Cada país pode ter:
 - picklists exclusivos
 
 O layout e spacing, porém, permanecem CONSISTENTES para todos.
+
+ATUALIZAÇÕES RECENTES POR PAÍS:
+- Campo “Salário Anual” aparece em Base de Cálculo (automático em todos os países).
+- Chile: Saúde/Plano e AFP ficam na mesma linha de “Descontos e fatores de dedução”.
+- Argentina: campos de Jubilación e Obra Social não são editáveis (descontos automáticos).
+- Colômbia: Cidade fica na primeira linha ao lado do País; Fundo de Solidariedade é automático e não tem campo manual.
+- México: Estado fica na primeira linha ao lado do País; Cuota Obrera é automática (sem campo); Riesgo de Trabajo removido.
+- EUA: Estado na primeira linha ao lado do País; Filing Status e Retenção adicional na linha de descontos.
+- Canadá: Província e ajustes provinciais na primeira linha ao lado do País; subtítulo de tributação removido.
+- Benefícios informativos (FGTS/AFP/Jubilación/Cesantías/AFORE/RRSP etc.) aparecem logo abaixo das tabelas Mensal e Anual, não na composição.
 
 
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

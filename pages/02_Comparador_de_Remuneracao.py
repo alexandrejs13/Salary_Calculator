@@ -35,18 +35,13 @@ def main():
     dest_flag = COUNTRIES.get(current_dest, DEFAULT_COUNTRY).code
     flag_emoji = {"br": "🇧🇷", "cl": "🇨🇱", "ar": "🇦🇷", "co": "🇨🇴", "mx": "🇲🇽", "us": "🇺🇸", "ca": "🇨🇦"}.get(dest_flag, "")
     st.markdown(
+        "<div class='title-card'>"
         "<div class='title-row'>"
         f"<h1>Comparador de Remuneração</h1>"
-        f"<span style='font-size:40px'>{flag_emoji}</span>"
-        "</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        "<div style='height:6px;display:flex;justify-content:space-between;align-items:center;'>"
-        "<div>"
+        f"<span class='title-flag'>{flag_emoji}</span>"
+        "</div>"
         "<div style='font-size:16px; font-weight:600;'>Região Américas</div>"
         "<div style='font-size:12px; color:#666;'>Calcule salários, bônus e descontos por país</div>"
-        "</div>"
         "<div style='font-size:12px; color:#666;'>Atualize origem e destino para comparar pacotes</div>"
         "</div>",
         unsafe_allow_html=True,

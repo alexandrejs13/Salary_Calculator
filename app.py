@@ -14,19 +14,16 @@ def main():
     country_cfg = COUNTRIES.get(current_code, DEFAULT_COUNTRY)
 
     st.markdown(
+        "<div class='title-card'>"
         "<div class='title-row'>"
         f"<h1>Simulador de Remuneração</h1>"
         f"<span class='title-flag'>🇧🇷</span>"
+        "</div>"
+        "<div style='font-size:16px; font-weight:600;'>Região Américas</div>"
+        "<div style='font-size:12px; color:#666;'>Calcule salários, bônus e descontos por país</div>"
         "</div>",
         unsafe_allow_html=True,
     )
-    st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
-    st.markdown(
-        "<div style='font-size:16px; font-weight:600;'>Região Américas</div>"
-        "<div style='font-size:12px; color:#666;'>Calcule salários, bônus e descontos por país</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
     st.markdown("#### Parâmetros de cálculo da remuneração", unsafe_allow_html=True)
     with st.container():
         st.markdown("<div class='form-shell'>", unsafe_allow_html=True)
