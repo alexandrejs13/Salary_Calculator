@@ -41,7 +41,7 @@ body, html {
 .field-row {
     display: flex;
     gap: 16px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .field {
@@ -61,6 +61,7 @@ select {
     border: none !important;
     box-shadow: inset 0 0 0 1px #F5F5F5;
     padding: 6px 8px !important;
+    border-radius: 6px !important;
 }
 
 .stNumberInput button,
@@ -68,10 +69,12 @@ select {
 .stNumberInput .st-c5 {
     background: #F5F5F5 !important;
     border: none !important;
+    border-radius: 6px !important;
 }
 
 .stSelectbox div[data-baseweb="select"] {
     background: #F5F5F5 !important;
+    border-radius: 6px !important;
 }
 
 
