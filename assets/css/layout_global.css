@@ -63,6 +63,8 @@ select {
     padding: 6px 8px !important;
     border-radius: 6px !important;
     min-height: 40px !important;
+    height: 40px !important;
+    line-height: 1.2 !important;
 }
 
 .stNumberInput button,
@@ -77,6 +79,7 @@ select {
     background: #F5F5F5 !important;
     border-radius: 6px !important;
     min-height: 40px !important;
+    height: 40px !important;
 }
 
 
