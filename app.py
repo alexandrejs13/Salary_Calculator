@@ -25,10 +25,7 @@ def main():
         unsafe_allow_html=True,
     )
     st.markdown("#### Parâmetros de cálculo da remuneração", unsafe_allow_html=True)
-    with st.container():
-        st.markdown("<div class='form-shell'>", unsafe_allow_html=True)
-        values = render_country_form(country_cfg.code, translations, allow_country_select=True)
-        st.markdown("</div>", unsafe_allow_html=True)
+    values = render_country_form(country_cfg.code, translations, allow_country_select=True)
     st.session_state["page1_country_code"] = values.get("country_code", current_code)
 
     if st.button(t(translations, "calculate_button")):
