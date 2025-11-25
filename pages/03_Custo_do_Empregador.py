@@ -132,16 +132,16 @@ def main():
         vacation_third = monthly_base / 3 if country_cfg.code == "br" else 0.0
         annual_salary = monthly_base * 12
         remuneration_rows = [
-            ("Salário base", base_salary * 12, None) if base_salary else (None, 0, None),
-            ("Outros adicionais (12x)", additions * 12, None) if additions else (None, 0, None),
-            ("13º salário" if thirteenth else None, thirteenth, None),
-            ("Férias", vacation, None) if vacation else (None, 0, None),
-            ("1/3 férias", vacation_third, None) if vacation_third else (None, 0, None),
-            ("Bônus", bonus_value, None) if bonus_value else (None, 0, None),
+            ("Salário base", base_salary * 12, None, "Salário") if base_salary else (None, 0, None, None),
+            ("Outros adicionais (12x)", additions * 12, None, "Adicionais") if additions else (None, 0, None, None),
+            ("13º salário" if thirteenth else None, thirteenth, None, "13º") if thirteenth else (None, 0, None, None),
+            ("Férias", vacation, None, "Férias") if vacation else (None, 0, None, None),
+            ("1/3 férias", vacation_third, None, "1/3 férias") if vacation_third else (None, 0, None, None),
+            ("Bônus", bonus_value, None, "Bônus") if bonus_value else (None, 0, None, None),
         ]
         benefits_rows = [
-            ("Benefícios em espécie", in_kind_benefits * freq, None) if in_kind_benefits else (None, 0, None),
-            ("Previdência privada (empregador)", pension_employer * freq, None) if pension_employer else (None, 0, None),
+            ("Benefícios em espécie", in_kind_benefits * freq, None, "Benefícios") if in_kind_benefits else (None, 0, None, None),
+            ("Previdência privada (empregador)", pension_employer * freq, None, "Benefícios") if pension_employer else (None, 0, None, None),
         ]
         charge_base = annual_salary + thirteenth + vacation + vacation_third
         if include_bonus_in_charges:
@@ -152,57 +152,63 @@ def main():
             employer_rows.append((item, rate * 100, annual_value))
 
         all_rows = []
-        for label, val, rate in remuneration_rows:
+        for label, val, rate, type_label in remuneration_rows:
             if label and val:
-                all_rows.append((label, rate, val, "rem"))
-        for label, val, rate in benefits_rows:
+                all_rows.append((label, rate, val, "rem", type_label or "Remuneração"))
+        for label, val, rate, type_label in benefits_rows:
             if label and val:
-                all_rows.append((label, rate, val, "benefit"))
+                all_rows.append((label, rate, val, "benefit", type_label or "Benefícios"))
         for label, rate_pct, val in employer_rows:
-            all_rows.append((label, rate_pct, val, "charge"))
+            all_rows.append((label, rate_pct, val, "charge", "Encargos"))
 
-        rem_total = sum(val for _, _, val, cat in all_rows if cat == "rem")
-        ben_total = sum(val for _, _, val, cat in all_rows if cat == "benefit")
-        charge_total = sum(val for _, _, val, cat in all_rows if cat == "charge")
+        rem_total = sum(val for _, _, val, cat, _ in all_rows if cat == "rem")
+        ben_total = sum(val for _, _, val, cat, _ in all_rows if cat == "benefit")
+        charge_total = sum(val for _, _, val, cat, _ in all_rows if cat == "charge")
         total_cost = rem_total + ben_total + charge_total
         st.markdown("### " + translations.get("section_employer_cost", "Custo do empregador"))
         table_html = ["<table class='result-table'>"]
         table_html.append(
             "<tr>"
+            "<th class='text-left'>Tipo</th>"
             "<th class='text-left'>Descrição</th>"
             "<th class='text-center'>% empregador</th>"
             "<th class='text-right'>Valor mensal (12)</th>"
             "<th class='text-right'>Valor anual</th>"
             "</tr>"
         )
-        for label, rate, annual_value, cat in all_rows:
+        for label, rate, annual_value, cat, type_label in all_rows:
             monthly_value = annual_value / 12
             rate_txt = f"{rate:.2f}%" if rate else "—"
+            cat_label = type_label
             table_html.append(
                 f"<tr>"
+                f"<td class='text-left'>{cat_label}</td>"
                 f"<td class='text-left'>{label}</td>"
                 f"<td class='text-center'>{rate_txt}</td>"
                 f"<td class='text-right'>{currency} {monthly_value:,.2f}</td>"
                 f"<td class='text-right'>{currency} {annual_value:,.2f}</td>"
                 f"</tr>"
             )
+        # Subtotais em cinza claro
+        def pct(total):
+            return (total / total_cost * 100) if total_cost else 0
         table_html.append(
-            f"<tr class='final-row'>"
-            f"<td class='text-left'>Subtotal Remuneração</td><td></td>"
+            f"<tr style='background:#f4f4f4'>"
+            f"<td class='text-left'>Subtotal Remuneração ({pct(rem_total):.1f}%)</td><td></td>"
             f"<td class='text-right'>{currency} {(rem_total/12):,.2f}</td>"
             f"<td class='text-right'>{currency} {rem_total:,.2f}</td>"
             f"</tr>"
         )
         table_html.append(
-            f"<tr class='final-row'>"
-            f"<td class='text-left'>Subtotal Benefícios</td><td></td>"
+            f"<tr style='background:#f4f4f4'>"
+            f"<td class='text-left'>Subtotal Benefícios ({pct(ben_total):.1f}%)</td><td></td>"
             f"<td class='text-right'>{currency} {(ben_total/12):,.2f}</td>"
             f"<td class='text-right'>{currency} {ben_total:,.2f}</td>"
             f"</tr>"
         )
         table_html.append(
-            f"<tr class='final-row'>"
-            f"<td class='text-left'>Subtotal Encargos</td><td></td>"
+            f"<tr style='background:#f4f4f4'>"
+            f"<td class='text-left'>Subtotal Encargos ({pct(charge_total):.1f}%)</td><td></td>"
             f"<td class='text-right'>{currency} {(charge_total/12):,.2f}</td>"
             f"<td class='text-right'>{currency} {charge_total:,.2f}</td>"
             f"</tr>"
