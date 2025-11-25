@@ -59,6 +59,8 @@ def render_extra_info(extras: Dict, translations: Dict[str, str], currency: str,
     if not rows:
         return
 
+    st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
+    st.markdown("### Benefícios e depósitos")
     html = ["<table class='result-table'>"]
     html.append(
         "<tr>"
@@ -66,12 +68,17 @@ def render_extra_info(extras: Dict, translations: Dict[str, str], currency: str,
         f"<th class='text-right'>{translations.get('table_value', 'Valor')}</th>"
         "</tr>"
     )
+    total = 0.0
     for label, value in rows:
+        total += value
         html.append(
             "<tr>"
             f"<td class='text-left'>{label}</td>"
             f"<td class='text-right'>{format_currency(value, currency)}</td>"
             "</tr>"
         )
+    html.append(
+        f"<tr class='final-row'><td class='text-left'>{translations.get('total_label', 'Total')}</td><td class='text-right'>{format_currency(total, currency)}</td></tr>"
+    )
     html.append("</table>")
     st.markdown("\n".join(html), unsafe_allow_html=True)
