@@ -32,15 +32,15 @@ def main():
     current_origin = st.session_state.get("page2_origin_code", "br")
     current_dest = st.session_state.get("page2_dest_code", "us")
 
-    dest_flag = COUNTRIES.get(current_dest, DEFAULT_COUNTRY).code
-    flag_emoji = {"br": "🇧🇷", "cl": "🇨🇱", "ar": "🇦🇷", "co": "🇨🇴", "mx": "🇲🇽", "us": "🇺🇸", "ca": "🇨🇦"}.get(dest_flag, "")
-    flag_origin = {"br": "🇧🇷", "cl": "🇨🇱", "ar": "🇦🇷", "co": "🇨🇴", "mx": "🇲🇽", "us": "🇺🇸", "ca": "🇨🇦"}.get(current_origin, "")
+    flag_map = {"br": "🇧🇷", "cl": "🇨🇱", "ar": "🇦🇷", "co": "🇨🇴", "mx": "🇲🇽", "us": "🇺🇸", "ca": "🇨🇦"}
+    flag_origin = flag_map.get(current_origin, "")
+    flag_dest = flag_map.get(current_dest, "")
     st.markdown(
         "<div class='title-row'>"
         f"<h1>Comparador de Remuneração</h1>"
         f"<span style='display:flex; gap:8px; align-items:center;'>"
         f"<span class='title-flag'>{flag_origin}</span>"
-        f"<span class='title-flag'>{flag_emoji}</span>"
+        f"<span class='title-flag'>{flag_dest}</span>"
         "</span>"
         "</div>",
         unsafe_allow_html=True,
@@ -78,14 +78,26 @@ def main():
             ("Remuneração anual líquida", origin_to_dest_annual, res_dest.net_annual),
             ("Remuneração anual total", origin_to_dest_total, res_dest.total_comp),
         ]
+
         table_html = ["<table class='result-table'>"]
-        table_html.append("<tr><th>Descrição</th><th>Origem</th><th>Destino</th></tr>")
+        table_html.append("<tr><th>Descrição</th><th>Origem</th><th>Destino</th><th>Variação</th><th>Variação %</th></tr>")
         for desc, o, d in rows:
+            diff = d - o
+            pct = (diff / o * 100) if o else 0
+            cls = "credit" if diff > 0 else "debit" if diff < 0 else ""
+            pct_txt = f"{pct:,.2f}%" if o else "0.00%"
+            var_txt = f"{res_dest.currency} {abs(diff):,.2f}"
+            if diff > 0:
+                var_txt = f"+ {var_txt}"
+            elif diff < 0:
+                var_txt = f"- {var_txt}"
             table_html.append(
                 "<tr>"
                 f"<td>{desc}</td>"
                 f"<td style='text-align:right'>{res_dest.currency} {o:,.2f}</td>"
                 f"<td style='text-align:right'>{res_dest.currency} {d:,.2f}</td>"
+                f"<td style='text-align:right' class='{cls}'>{var_txt}</td>"
+                f"<td style='text-align:right' class='{cls}'>{pct_txt}</td>"
                 "</tr>"
             )
         table_html.append("</table>")
