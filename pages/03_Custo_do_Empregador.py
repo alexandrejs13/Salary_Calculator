@@ -60,13 +60,27 @@ def main():
         step=100.0,
         key="page3_base",
     )
-    additions = col2.number_input(
+    freq_display = col2.text_input(
+        t(translations, "frequency_label"),
+        value=str(country_cfg.annual_frequency),
+        disabled=True,
+    )
+    additions = col3.number_input(
         t(translations, "other_additions_label"),
         min_value=0.0,
         step=50.0,
         key="page3_additions",
     )
-    in_kind_benefits = col3.number_input(
+
+    annual_salary_display = (base_salary or 0) * country_cfg.annual_frequency
+    col1b, col2b, col3b = st.columns(3)
+    col1b.text_input(
+        t(translations, "salary_annual", "Salário anual (base)"),
+        value=f"{annual_salary_display:,.2f}",
+        disabled=True,
+        key="page3_salary_annual",
+    )
+    in_kind_benefits = col2b.number_input(
         translations.get("in_kind_benefits_label", "Benefícios em espécie"),
         min_value=0.0,
         step=50.0,
@@ -76,29 +90,34 @@ def main():
             "Adicione benefícios em espécie que não incidem no salário (vale refeição, alimentação, etc.).",
         ),
     )
+    pension_employer = col3b.number_input(
+        t(translations, "private_pension_employer_label"),
+        min_value=0.0,
+        step=50.0,
+        key="page3_pension_employer",
+        help=translations.get("private_pension_info", "Plano de previdência privada custeado pelo empregador."),
+    )
 
     col4, col5, col6 = st.columns(3)
-    bonus_percent = col3.number_input(
+    bonus_percent = col4.number_input(
         t(translations, "bonus_percent_label"),
         min_value=0.0,
         step=1.0,
         key="page3_bonus",
     )
-    bonus_incidence = col4.selectbox(
+    # Calculado após inputs
+    bonus_incidence = col6.selectbox(
         translations.get("bonus_incidence_label", "Incidências do Bônus"),
         country_cfg.bonus_incidence,
         key="page3_bonus_incidence",
     )
-    pension_employer = col5.number_input(
-        t(translations, "private_pension_employer_label"),
-        min_value=0.0,
-        step=50.0,
-        key="page3_pension_employer",
-    )
-    col6.text_input(
-        t(translations, "frequency_label"),
-        value=str(country_cfg.annual_frequency),
+    monthly_base_for_bonus = base_salary + additions
+    bonus_value_preview = (bonus_percent / 100) * monthly_base_for_bonus * country_cfg.annual_frequency
+    col5.text_input(
+        translations.get("bonus_value_label", "Valor Calculado"),
+        value=f"{bonus_value_preview:,.2f}",
         disabled=True,
+        key="page3_bonus_value",
     )
 
     if st.button(translations.get("calculate_button", "Calcular")):
@@ -113,7 +132,8 @@ def main():
         vacation_third = monthly_base / 3 if country_cfg.code == "br" else 0.0
         annual_salary = monthly_base * 12
         base_components = [
-            ("Salário base + adicionais (12x)", annual_salary, None),
+            ("Salário base (12x)", base_salary * 12, None) if base_salary else (None, 0, None),
+            ("Outros adicionais (12x)", additions * 12, None) if additions else (None, 0, None),
             ("13º salário" if thirteenth else None, thirteenth, None),
             ("Férias", vacation, None) if vacation else (None, 0, None),
             ("1/3 férias", vacation_third, None) if vacation_third else (None, 0, None),
