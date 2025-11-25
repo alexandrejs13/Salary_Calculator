@@ -91,7 +91,7 @@ def main():
         ),
     )
     pension_employer = col3b.number_input(
-        t(translations, "private_pension_employer_label"),
+        translations.get("private_pension_employer_label", "Previdência Privada"),
         min_value=0.0,
         step=50.0,
         key="page3_pension_employer",
@@ -133,17 +133,17 @@ def main():
         annual_salary = monthly_base * 12
         remuneration_rows = [
             ("Salário base", base_salary * 12, None, "Remuneração") if base_salary else (None, 0, None, None),
-            ("Outros adicionais (12x)", additions * 12, None, "Remuneração") if additions else (None, 0, None, None),
+            ("Outros adicionais", additions * 12, None, "Remuneração") if additions else (None, 0, None, None),
             ("Bônus", bonus_value, None, "Remuneração") if bonus_value else (None, 0, None, None),
         ]
         manual_charges = [
-            ("13º salário" if thirteenth else None, thirteenth, None, "Encargos") if thirteenth else (None, 0, None, None),
-            ("Férias", vacation, None, "Encargos") if vacation else (None, 0, None, None),
-            ("1/3 férias", vacation_third, None, "Encargos") if vacation_third else (None, 0, None, None),
+            ("13º salário" if thirteenth else None, thirteenth, 100.0, "Encargos") if thirteenth else (None, 0, None, None),
+            ("Férias", vacation, 100.0, "Encargos") if vacation else (None, 0, None, None),
+            ("1/3 férias", vacation_third, 100.0, "Encargos") if vacation_third else (None, 0, None, None),
         ]
         benefits_rows = [
             ("Benefícios em espécie", in_kind_benefits * freq, None, "Benefícios") if in_kind_benefits else (None, 0, None, None),
-            ("Previdência privada (empregador)", pension_employer * freq, None, "Benefícios") if pension_employer else (None, 0, None, None),
+            ("Previdência Privada", pension_employer * freq, None, "Benefícios") if pension_employer else (None, 0, None, None),
         ]
         charge_base = annual_salary + thirteenth + vacation + vacation_third
         if include_bonus_in_charges:
