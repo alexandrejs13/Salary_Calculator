@@ -31,6 +31,30 @@ def render_country_form(
         if selected:
             st.session_state[session_code_key] = label_to_code.get(selected, current_code)
 
+    def _fmt_br(num: float) -> str:
+        return f"{num:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+    def formatted_money_input(label: str, key: str, value: float = 0.0, step: float = 50.0, disabled: bool = False, help: str = None):
+        float_key = key
+        text_key = f"{key}_text"
+        stored = st.session_state.get(float_key, value)
+        default_text = _fmt_br(float(stored))
+        text_val = st.text_input(
+            label,
+            value=st.session_state.get(text_key, default_text),
+            key=text_key,
+            disabled=disabled,
+            help=help,
+        )
+        try:
+            clean = text_val.replace(".", "").replace(",", ".")
+            parsed = float(clean) if clean else 0.0
+        except ValueError:
+            parsed = stored if stored is not None else 0.0
+        st.session_state[float_key] = parsed
+        st.session_state[text_key] = _fmt_br(parsed)
+        return parsed
+
     # Primeira linha: país + campos variáveis por país (país na primeira coluna)
     if current_code == "ca":
         country_col, province_col, contract_col, adj_col = st.columns([1, 1, 1, 1])
@@ -107,11 +131,11 @@ def render_country_form(
         )
 
     col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
-    values["base_salary"] = col1.number_input(
+    values["base_salary"] = formatted_money_input(
         t(translations, "base_salary_label"),
-        min_value=0.0,
-        step=100.0,
         key=k("base_salary"),
+        value=0.0,
+        step=100.0,
     )
     col2.text_input(
         t(translations, "frequency_label"),
@@ -126,18 +150,18 @@ def render_country_form(
         disabled=True,
         key=k("annual_salary"),
     )
-    values["other_additions"] = col4.number_input(
+    values["other_additions"] = formatted_money_input(
         t(translations, "other_additions_label"),
-        min_value=0.0,
-        step=50.0,
         key=k("additions"),
+        value=0.0,
+        step=50.0,
         help=t(translations, "help_other_additions"),
     )
-    values["in_kind_benefits"] = col5.number_input(
+    values["in_kind_benefits"] = formatted_money_input(
         translations.get("in_kind_benefits_label", "Benefícios em espécie"),
-        min_value=0.0,
-        step=50.0,
         key=k("in_kind"),
+        value=0.0,
+        step=50.0,
         help=translations.get(
             "help_in_kind_benefits",
             "Adicione benefícios em espécie que não incidem no salário (vale refeição, alimentação, etc.).",
@@ -151,18 +175,18 @@ def render_country_form(
     else:
         col1, col2, col3 = st.columns([1, 1, 1])
 
-    values["other_discounts"] = col1.number_input(
+    values["other_discounts"] = formatted_money_input(
         t(translations, "other_discounts_label"),
-        min_value=0.0,
-        step=50.0,
         key=k("other_discounts"),
+        value=0.0,
+        step=50.0,
         help=t(translations, "help_other_discounts"),
     )
-    values["alimony"] = col2.number_input(
+    values["alimony"] = formatted_money_input(
         t(translations, "alimony_label"),
-        min_value=0.0,
-        step=50.0,
         key=k("alimony"),
+        value=0.0,
+        step=50.0,
     )
     values["dependents"] = col3.number_input(
         t(translations, "dependents_label"),
@@ -211,17 +235,17 @@ def render_country_form(
         pension_options,
         key=k("pension_type"),
     )
-    values["pension_employer"] = col2.number_input(
+    values["pension_employer"] = formatted_money_input(
         t(translations, "private_pension_employer_label"),
-        min_value=0.0,
-        step=50.0,
         key=k("pension_employer"),
-    )
-    values["pension_employee"] = col3.number_input(
-        t(translations, "private_pension_employee_label"),
-        min_value=0.0,
+        value=0.0,
         step=50.0,
+    )
+    values["pension_employee"] = formatted_money_input(
+        t(translations, "private_pension_employee_label"),
         key=k("pension_employee"),
+        value=0.0,
+        step=50.0,
     )
 
     col1, col2, col3 = st.columns(3)
