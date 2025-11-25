@@ -43,7 +43,6 @@ def main():
     )
     st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
     st.markdown("#### Parâmetros de cálculo da remuneração", unsafe_allow_html=True)
-    st.markdown("<hr style='margin-top:0;margin-bottom:8px'/>", unsafe_allow_html=True)
 
     with st.container():
         st.markdown("<div class='form-shell'>", unsafe_allow_html=True)

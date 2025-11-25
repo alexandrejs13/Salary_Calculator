@@ -16,14 +16,10 @@ def main():
     render_title_with_flag(translations, country_cfg)
     st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
     st.markdown("#### Parâmetros de cálculo da remuneração", unsafe_allow_html=True)
-    st.markdown("<hr style='margin-top:0;margin-bottom:8px'/>", unsafe_allow_html=True)
-
     st.markdown("<div class='form-shell'>", unsafe_allow_html=True)
     values = render_country_form(country_cfg.code, translations, allow_country_select=True)
     st.markdown("</div>", unsafe_allow_html=True)
     st.session_state["page1_country_code"] = values.get("country_code", current_code)
-
-    st.markdown("<hr style='margin-top:6px;margin-bottom:24px'/>", unsafe_allow_html=True)
 
     if st.button(t(translations, "calculate_button")):
         result = calculate_compensation(values.get("country_code", country_cfg.code), values)

@@ -62,9 +62,9 @@ select {
     box-shadow: inset 0 0 0 1px #F5F5F5;
     padding: 8px 10px !important;
     border-radius: 6px !important;
-    min-height: 38px !important;
-    height: auto !important;
-    line-height: 1.4 !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    line-height: 1.3 !important;
 }
 
 .stNumberInput button,
@@ -73,13 +73,15 @@ select {
     background: #F5F5F5 !important;
     border: none !important;
     border-radius: 6px !important;
+    height: 40px !important;
+    min-height: 40px !important;
 }
 
 .stSelectbox div[data-baseweb="select"] {
     background: #F5F5F5 !important;
     border-radius: 6px !important;
-    min-height: 38px !important;
-    height: auto !important;
+    height: 40px !important;
+    min-height: 40px !important;
 }
 
 
