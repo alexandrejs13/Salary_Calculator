@@ -41,9 +41,9 @@ def main():
         "</div>",
         unsafe_allow_html=True,
     )
-    st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
     st.markdown("#### Parâmetros de cálculo da remuneração", unsafe_allow_html=True)
-    st.markdown("<hr style='margin-top:0;margin-bottom:10px'/>", unsafe_allow_html=True)
+    st.markdown("<hr style='margin-top:0;margin-bottom:8px'/>", unsafe_allow_html=True)
 
     tab_origem, tab_destino = st.tabs(["País de origem", "País de destino"])
 
@@ -55,7 +55,7 @@ def main():
         values_dest = render_country_form(current_dest, translations, prefix="dest", allow_country_select=True)
         st.session_state["page2_dest_code"] = values_dest.get("country_code", current_dest)
 
-    st.markdown("<hr style='margin-top:6px;margin-bottom:24px'/>", unsafe_allow_html=True)
+    st.markdown("<hr style='margin-top:6px;margin-bottom:20px'/>", unsafe_allow_html=True)
 
     if st.button("Comparar Remuneração"):
         origin_code = values_origin.get("country_code", current_origin)
