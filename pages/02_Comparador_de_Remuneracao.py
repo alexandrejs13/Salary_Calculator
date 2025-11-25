@@ -4,7 +4,7 @@ from engines.calculator import calculate_compensation
 from engines.countries import COUNTRIES, DEFAULT_COUNTRY
 from engines.forms import render_country_form
 from engines.i18n import t
-from engines.ui import init_page, render_title_with_flag
+from engines.ui import init_page
 
 
 # Conversão simplificada (fator para moeda base fixa)
@@ -32,9 +32,18 @@ def main():
     current_origin = st.session_state.get("page2_origin_code", "br")
     current_dest = st.session_state.get("page2_dest_code", "us")
 
-    st.markdown("## Comparador de Remuneração")
-    render_title_with_flag(translations, COUNTRIES.get(current_origin, DEFAULT_COUNTRY))
-    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+    dest_flag = COUNTRIES.get(current_dest, DEFAULT_COUNTRY).code
+    flag_emoji = {"br": "🇧🇷", "cl": "🇨🇱", "ar": "🇦🇷", "co": "🇨🇴", "mx": "🇲🇽", "us": "🇺🇸", "ca": "🇨🇦"}.get(dest_flag, "")
+    st.markdown(
+        "<div class='title-row'>"
+        f"<h1>Comparador de Remuneração – Região Américas</h1>"
+        f"<span style='font-size:28px'>{flag_emoji}</span>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+    st.markdown("#### Parâmetros de cálculo da remuneração", unsafe_allow_html=True)
+    st.markdown("<hr style='margin-top:0;margin-bottom:10px'/>", unsafe_allow_html=True)
 
     tab_origem, tab_destino = st.tabs(["País de origem", "País de destino"])
 
