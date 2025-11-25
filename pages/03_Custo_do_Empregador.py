@@ -75,7 +75,7 @@ def main():
     annual_salary_display = (base_salary or 0) * country_cfg.annual_frequency
     col1b, col2b, col3b = st.columns(3)
     col1b.text_input(
-        t(translations, "salary_annual", "Salário anual (base)"),
+        translations.get("salary_annual", "Salário anual (base)"),
         value=f"{annual_salary_display:,.2f}",
         disabled=True,
         key="page3_salary_annual",
