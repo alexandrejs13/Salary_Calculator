@@ -34,23 +34,19 @@ def main():
 
     dest_flag = COUNTRIES.get(current_dest, DEFAULT_COUNTRY).code
     flag_emoji = {"br": "🇧🇷", "cl": "🇨🇱", "ar": "🇦🇷", "co": "🇨🇴", "mx": "🇲🇽", "us": "🇺🇸", "ca": "🇨🇦"}.get(dest_flag, "")
+    flag_origin = {"br": "🇧🇷", "cl": "🇨🇱", "ar": "🇦🇷", "co": "🇨🇴", "mx": "🇲🇽", "us": "🇺🇸", "ca": "🇨🇦"}.get(current_origin, "")
     st.markdown(
         "<div class='title-row'>"
         f"<h1>Comparador de Remuneração</h1>"
+        f"<span style='display:flex; gap:8px; align-items:center;'>"
+        f"<span class='title-flag'>{flag_origin}</span>"
         f"<span class='title-flag'>{flag_emoji}</span>"
+        "</span>"
         "</div>",
         unsafe_allow_html=True,
     )
     st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
     st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
-
-    flag_origin = {"br": "🇧🇷", "cl": "🇨🇱", "ar": "🇦🇷", "co": "🇨🇴", "mx": "🇲🇽", "us": "🇺🇸", "ca": "🇨🇦"}.get(current_origin, "")
-    st.markdown(
-        f"<div style='display:flex; justify-content:flex-end; gap:12px; align-items:center; font-size:26px;'>"
-        f"<span>{flag_origin}</span><span>{flag_emoji}</span>"
-        "</div>",
-        unsafe_allow_html=True,
-    )
 
     tab_origem, tab_destino = st.tabs(["País de origem", "País de destino"])
 
