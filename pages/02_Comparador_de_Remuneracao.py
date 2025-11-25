@@ -116,15 +116,17 @@ def main():
             html.append(
                 "<tr>"
                 f"<th class='text-left' style='width:30%'>Descrição</th>"
-                f"<th class='text-left' style='width:17.5%'>{origin_label}</th>"
-                f"<th class='text-left' style='width:17.5%'>{dest_label}</th>"
-                "<th class='text-left' style='width:17.5%'>Variação</th>"
+                f"<th class='text-right' style='width:17.5%'>{origin_label}</th>"
+                f"<th class='text-right' style='width:17.5%'>{dest_label}</th>"
+                "<th class='text-right' style='width:17.5%'>Variação</th>"
                 "<th class='text-center' style='width:17.5%'>Variação %</th>"
                 "</tr>"
             )
             for desc, o, d in rows:
                 diff = d - o
                 pct = (diff / o * 100) if o else 0
+                if abs(o) < 1e-9 and abs(d) < 1e-9 and abs(diff) < 1e-9:
+                    continue
                 cls = "credit" if diff > 0 else "debit" if diff < 0 else ""
                 pct_txt = f"{pct:,.2f}%" if o else "0.00%"
                 var_txt = f"{res_dest.currency} {abs(diff):,.2f}"
@@ -133,13 +135,21 @@ def main():
                 elif diff < 0:
                     var_txt = f"- {var_txt}"
                 row_class = "final-row" if ("Líquido" in desc or "Total" in desc) else ""
+                # Linha final verde: texto branco e sem cores de débito/crédito
+                if row_class == "final-row":
+                    cls = ""
+                    var_txt = f"{res_dest.currency} {abs(diff):,.2f}" if diff else f"{res_dest.currency} {diff:,.2f}"
+                    pct_txt = f"{pct:,.2f}%" if o else "0.00%"
+                    final_style = "color:white; font-weight:bold;"
+                else:
+                    final_style = ""
                 html.append(
                     f"<tr class='{row_class}'>"
                     f"<td class='text-left' style='width:30%'>{desc}</td>"
                     f"<td class='text-right' style='width:17.5%'>{res_dest.currency} {o:,.2f}</td>"
                     f"<td class='text-right' style='width:17.5%'>{res_dest.currency} {d:,.2f}</td>"
-                    f"<td class='text-right {cls}' style='width:17.5%'>{var_txt}</td>"
-                    f"<td class='text-center {cls}' style='width:17.5%'>{pct_txt}</td>"
+                    f"<td class='text-right {cls}' style='width:17.5%; {final_style}'>{var_txt}</td>"
+                    f"<td class='text-center {cls}' style='width:17.5%; {final_style}'>{pct_txt}</td>"
                     "</tr>"
                 )
             html.append("<tr><td colspan='5' style='height:8px'></td></tr>")
@@ -164,9 +174,9 @@ def main():
             html.append(
                 "<tr>"
                 f"<th class='text-left' style='width:30%'>Benefício/Depósito</th>"
-                f"<th class='text-left' style='width:17.5%'>{origin_label}</th>"
-                f"<th class='text-left' style='width:17.5%'>{dest_label}</th>"
-                "<th class='text-left' style='width:17.5%'>Variação</th>"
+                f"<th class='text-right' style='width:17.5%'>{origin_label}</th>"
+                f"<th class='text-right' style='width:17.5%'>{dest_label}</th>"
+                "<th class='text-right' style='width:17.5%'>Variação</th>"
                 "<th class='text-center' style='width:17.5%'>Variação %</th>"
                 "</tr>"
             )
@@ -179,6 +189,8 @@ def main():
                 total_o += o_conv
                 total_d += d_val
                 diff = d_val - o_conv
+                if abs(o_conv) < 1e-9 and abs(d_val) < 1e-9 and abs(diff) < 1e-9:
+                    continue
                 pct = (diff / o_conv * 100) if o_conv else 0
                 cls = "credit" if diff > 0 else "debit" if diff < 0 else ""
                 pct_txt = f"{pct:,.2f}%" if o_conv else "0.00%"
@@ -208,10 +220,10 @@ def main():
             html.append(
                 f"<tr class='final-row'>"
                 f"<td class='text-left'>Total</td>"
-                f"<td class='text-right'>{res_dest.currency} {total_o:,.2f}</td>"
-                f"<td class='text-right'>{res_dest.currency} {total_d:,.2f}</td>"
-                f"<td class='text-right {total_cls}'>{total_var_txt}</td>"
-                f"<td class='text-center {total_cls}'>{total_pct_txt}</td>"
+                f"<td class='text-right' style='color:white; font-weight:bold'>{res_dest.currency} {total_o:,.2f}</td>"
+                f"<td class='text-right' style='color:white; font-weight:bold'>{res_dest.currency} {total_d:,.2f}</td>"
+                f"<td class='text-right' style='color:white; font-weight:bold'>{total_var_txt}</td>"
+                f"<td class='text-center' style='color:white; font-weight:bold'>{total_pct_txt}</td>"
                 f"</tr>"
             )
             html.append("<tr><td colspan='5' style='height:8px'></td></tr>")
