@@ -63,22 +63,28 @@ select,
     background: #f7f7f7 !important;
     border: 1px solid #f7f7f7 !important;
     box-shadow: none !important;
-    padding: 8px 10px !important;
+    padding: 10px 12px !important;
     border-radius: 6px !important;
-    min-height: 42px !important;
-    height: 42px !important;
-    line-height: 1.2 !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    line-height: 1.3 !important;
 }
 
 .stSelectbox div[data-baseweb="select"] {
     background: #f7f7f7 !important;
     border-radius: 6px !important;
-    min-height: 42px !important;
-    height: 42px !important;
+    min-height: 44px !important;
+    height: 44px !important;
     padding: 0 !important;
     box-shadow: none !important;
     display: flex;
     align-items: center;
+}
+
+.stSelectbox div[data-baseweb="select"] > div {
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
 
@@ -98,7 +104,7 @@ select,
 }
 
 .title-flag {
-    height: 40px;
+    height: 26px;
     width: auto;
 }
 
@@ -192,8 +198,8 @@ select,
 
 /* Sidebar */
 [data-testid="stSidebar"] {
-    background: #F1F3F5;
-    border-right: 1px solid #E0E0E0;
+    background: #e3ecee;
+    border-right: 1px solid #d0d9db;
     resize: none !important;
     min-width: 280px;
     max-width: 320px;
