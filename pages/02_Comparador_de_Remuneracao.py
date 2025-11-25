@@ -108,10 +108,10 @@ def main():
             html.append(
                 "<tr>"
                 f"<th class='text-left' style='width:30%'>Descrição</th>"
-                f"<th class='text-right'>{origin_label}</th>"
-                f"<th class='text-right'>{dest_label}</th>"
-                "<th class='text-right'>Variação</th>"
-                "<th class='text-center'>Variação %</th>"
+                f"<th class='text-right' style='width:17.5%'>{origin_label}</th>"
+                f"<th class='text-right' style='width:17.5%'>{dest_label}</th>"
+                "<th class='text-right' style='width:17.5%'>Variação</th>"
+                "<th class='text-center' style='width:17.5%'>Variação %</th>"
                 "</tr>"
             )
             for desc, o, d in rows:
@@ -128,10 +128,10 @@ def main():
                 html.append(
                     f"<tr class='{row_class}'>"
                     f"<td class='text-left' style='width:30%'>{desc}</td>"
-                    f"<td class='text-right'>{res_dest.currency} {o:,.2f}</td>"
-                    f"<td class='text-right'>{res_dest.currency} {d:,.2f}</td>"
-                    f"<td class='text-right {cls}'>{var_txt}</td>"
-                    f"<td class='text-center {cls}'>{pct_txt}</td>"
+                    f"<td class='text-right' style='width:17.5%'>{res_dest.currency} {o:,.2f}</td>"
+                    f"<td class='text-right' style='width:17.5%'>{res_dest.currency} {d:,.2f}</td>"
+                    f"<td class='text-right {cls}' style='width:17.5%'>{var_txt}</td>"
+                    f"<td class='text-center {cls}' style='width:17.5%'>{pct_txt}</td>"
                     "</tr>"
                 )
             html.append("</table>")
@@ -155,10 +155,10 @@ def main():
             html.append(
                 "<tr>"
                 f"<th class='text-left' style='width:30%'>Benefício/Depósito</th>"
-                f"<th class='text-right'>{origin_label}</th>"
-                f"<th class='text-right'>{dest_label}</th>"
-                "<th class='text-right'>Variação</th>"
-                "<th class='text-center'>Variação %</th>"
+                f"<th class='text-right' style='width:17.5%'>{origin_label}</th>"
+                f"<th class='text-right' style='width:17.5%'>{dest_label}</th>"
+                "<th class='text-right' style='width:17.5%'>Variação</th>"
+                "<th class='text-center' style='width:17.5%'>Variação %</th>"
                 "</tr>"
             )
             total_o = 0.0
@@ -181,10 +181,10 @@ def main():
                 html.append(
                     "<tr>"
                     f"<td class='text-left' style='width:30%'>{label}</td>"
-                    f"<td class='text-right'>{res_dest.currency} {o_conv:,.2f}</td>"
-                    f"<td class='text-right'>{res_dest.currency} {d_val:,.2f}</td>"
-                    f"<td class='text-right {cls}'>{var_txt}</td>"
-                    f"<td class='text-center {cls}'>{pct_txt}</td>"
+                    f"<td class='text-right' style='width:17.5%'>{res_dest.currency} {o_conv:,.2f}</td>"
+                    f"<td class='text-right' style='width:17.5%'>{res_dest.currency} {d_val:,.2f}</td>"
+                    f"<td class='text-right {cls}' style='width:17.5%'>{var_txt}</td>"
+                    f"<td class='text-center {cls}' style='width:17.5%'>{pct_txt}</td>"
                     "</tr>"
                 )
             total_diff = total_d - total_o
