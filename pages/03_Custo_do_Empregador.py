@@ -132,12 +132,14 @@ def main():
         vacation_third = monthly_base / 3 if country_cfg.code == "br" else 0.0
         annual_salary = monthly_base * 12
         remuneration_rows = [
-            ("Salário base", base_salary * 12, None, "Salário") if base_salary else (None, 0, None, None),
-            ("Outros adicionais (12x)", additions * 12, None, "Adicionais") if additions else (None, 0, None, None),
-            ("13º salário" if thirteenth else None, thirteenth, None, "13º") if thirteenth else (None, 0, None, None),
-            ("Férias", vacation, None, "Férias") if vacation else (None, 0, None, None),
-            ("1/3 férias", vacation_third, None, "1/3 férias") if vacation_third else (None, 0, None, None),
-            ("Bônus", bonus_value, None, "Bônus") if bonus_value else (None, 0, None, None),
+            ("Salário base", base_salary * 12, None, "Remuneração") if base_salary else (None, 0, None, None),
+            ("Outros adicionais (12x)", additions * 12, None, "Remuneração") if additions else (None, 0, None, None),
+            ("Bônus", bonus_value, None, "Remuneração") if bonus_value else (None, 0, None, None),
+        ]
+        manual_charges = [
+            ("13º salário" if thirteenth else None, thirteenth, None, "Encargos") if thirteenth else (None, 0, None, None),
+            ("Férias", vacation, None, "Encargos") if vacation else (None, 0, None, None),
+            ("1/3 férias", vacation_third, None, "Encargos") if vacation_third else (None, 0, None, None),
         ]
         benefits_rows = [
             ("Benefícios em espécie", in_kind_benefits * freq, None, "Benefícios") if in_kind_benefits else (None, 0, None, None),
@@ -158,6 +160,9 @@ def main():
         for label, val, rate, type_label in benefits_rows:
             if label and val:
                 all_rows.append((label, rate, val, "benefit", type_label or "Benefícios"))
+        for label, val, rate, type_label in manual_charges:
+            if label and val:
+                all_rows.append((label, rate, val, "charge", type_label or "Encargos"))
         for label, rate_pct, val in employer_rows:
             all_rows.append((label, rate_pct, val, "charge", "Encargos"))
 
@@ -194,28 +199,31 @@ def main():
             return (total / total_cost * 100) if total_cost else 0
         table_html.append(
             f"<tr style='background:#f4f4f4'>"
-            f"<td class='text-left'>Subtotal Remuneração ({pct(rem_total):.1f}%)</td><td></td>"
+            f"<td class='text-left'>Subtotal Remuneração ({pct(rem_total):.1f}%)</td>"
+            f"<td></td><td class='text-center'></td>"
             f"<td class='text-right'>{currency} {(rem_total/12):,.2f}</td>"
             f"<td class='text-right'>{currency} {rem_total:,.2f}</td>"
             f"</tr>"
         )
         table_html.append(
             f"<tr style='background:#f4f4f4'>"
-            f"<td class='text-left'>Subtotal Benefícios ({pct(ben_total):.1f}%)</td><td></td>"
+            f"<td class='text-left'>Subtotal Benefícios ({pct(ben_total):.1f}%)</td>"
+            f"<td></td><td class='text-center'></td>"
             f"<td class='text-right'>{currency} {(ben_total/12):,.2f}</td>"
             f"<td class='text-right'>{currency} {ben_total:,.2f}</td>"
             f"</tr>"
         )
         table_html.append(
             f"<tr style='background:#f4f4f4'>"
-            f"<td class='text-left'>Subtotal Encargos ({pct(charge_total):.1f}%)</td><td></td>"
+            f"<td class='text-left'>Subtotal Encargos ({pct(charge_total):.1f}%)</td>"
+            f"<td></td><td class='text-center'></td>"
             f"<td class='text-right'>{currency} {(charge_total/12):,.2f}</td>"
             f"<td class='text-right'>{currency} {charge_total:,.2f}</td>"
             f"</tr>"
         )
         table_html.append(
             f"<tr class='final-row'>"
-            f"<td class='text-left'>Total</td><td></td>"
+            f"<td class='text-left'>Total</td><td></td><td class='text-center'></td>"
             f"<td class='text-right'>{currency} {(total_cost/12):,.2f}</td>"
             f"<td class='text-right'>{currency} {total_cost:,.2f}</td>"
             f"</tr>"
