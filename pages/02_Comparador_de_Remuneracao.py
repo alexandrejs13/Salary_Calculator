@@ -80,7 +80,15 @@ def main():
         ]
 
         table_html = ["<table class='result-table'>"]
-        table_html.append("<tr><th>Descrição</th><th>Origem</th><th>Destino</th><th>Variação</th><th>Variação %</th></tr>")
+        table_html.append(
+            "<tr>"
+            "<th class='text-left'>Descrição</th>"
+            "<th class='text-right'>Origem</th>"
+            "<th class='text-right'>Destino</th>"
+            "<th class='text-right'>Variação</th>"
+            "<th class='text-center'>Variação %</th>"
+            "</tr>"
+        )
         for desc, o, d in rows:
             diff = d - o
             pct = (diff / o * 100) if o else 0
@@ -93,11 +101,11 @@ def main():
                 var_txt = f"- {var_txt}"
             table_html.append(
                 "<tr>"
-                f"<td>{desc}</td>"
-                f"<td style='text-align:right'>{res_dest.currency} {o:,.2f}</td>"
-                f"<td style='text-align:right'>{res_dest.currency} {d:,.2f}</td>"
-                f"<td style='text-align:right' class='{cls}'>{var_txt}</td>"
-                f"<td style='text-align:right' class='{cls}'>{pct_txt}</td>"
+                f"<td class='text-left'>{desc}</td>"
+                f"<td class='text-right'>{res_dest.currency} {o:,.2f}</td>"
+                f"<td class='text-right'>{res_dest.currency} {d:,.2f}</td>"
+                f"<td class='text-right {cls}'>{var_txt}</td>"
+                f"<td class='text-center {cls}'>{pct_txt}</td>"
                 "</tr>"
             )
         table_html.append("</table>")
