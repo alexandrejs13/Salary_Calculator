@@ -136,10 +136,13 @@ def main():
             ("Outros adicionais", additions * 12, None, "Remuneração") if additions else (None, 0, None, None),
             ("Bônus", bonus_value, None, "Remuneração") if bonus_value else (None, 0, None, None),
         ]
+        pct_13 = 100.0 / 12.0  # ~8.33%
+        pct_vac = 100.0 / 12.0  # ~8.33%
+        pct_third = (1.0 / 3.0) * pct_vac  # ~2.78%
         manual_charges = [
-            ("13º salário" if thirteenth else None, thirteenth, 100.0, "Encargos") if thirteenth else (None, 0, None, None),
-            ("Férias", vacation, 100.0, "Encargos") if vacation else (None, 0, None, None),
-            ("1/3 férias", vacation_third, 100.0, "Encargos") if vacation_third else (None, 0, None, None),
+            ("13º salário" if thirteenth else None, thirteenth, pct_13, "Encargos") if thirteenth else (None, 0, None, None),
+            ("Férias", vacation, pct_vac, "Encargos") if vacation else (None, 0, None, None),
+            ("1/3 férias", vacation_third, pct_third, "Encargos") if vacation_third else (None, 0, None, None),
         ]
         benefits_rows = [
             ("Benefícios em espécie", in_kind_benefits * freq, None, "Benefícios") if in_kind_benefits else (None, 0, None, None),
@@ -232,7 +235,8 @@ def main():
         st.markdown("\n".join(table_html), unsafe_allow_html=True)
 
         # Tabela de incidências
-        st.markdown("#### Incidências dos encargos sobre componentes")
+        st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
+        st.markdown("### Incidências dos encargos sobre componentes")
         inc_headers = ["Encargo", "Salário", "13º", "Férias", "Bônus", "Benefícios esp.", "Prev. empregador"]
         inc_cols = ["salary", "thirteenth", "vacation", "bonus", "in_kind", "pension"]
         inc_matrix = []
