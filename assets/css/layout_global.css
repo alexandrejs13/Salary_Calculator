@@ -50,16 +50,6 @@ body, html {
     flex-direction: column;
 }
 
-/* Inputs */
-input, textarea, select {
-    background: #d3e6e9 !important;
-    border: 1px solid #9cb8bd !important;
-}
-
-.stSelectbox, .stNumberInput, .stTextInput {
-    background: #d3e6e9 !important;
-    border: 1px solid #9cb8bd !important;
-}
 
 /* Title + flag */
 .title-row {
