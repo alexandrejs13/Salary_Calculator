@@ -133,19 +133,19 @@ def main():
                 elif diff < 0:
                     var_txt = f"- {var_txt}"
                 row_class = "final-row" if ("Líquido" in desc or "Total" in desc) else ""
-            html.append(
-                f"<tr class='{row_class}'>"
-                f"<td class='text-left' style='width:30%'>{desc}</td>"
-                f"<td class='text-right' style='width:17.5%'>{res_dest.currency} {o:,.2f}</td>"
-                f"<td class='text-right' style='width:17.5%'>{res_dest.currency} {d:,.2f}</td>"
-                f"<td class='text-right {cls}' style='width:17.5%'>{var_txt}</td>"
-                f"<td class='text-center {cls}' style='width:17.5%'>{pct_txt}</td>"
-                "</tr>"
-            )
-        html.append("<tr><td colspan='5' style='height:8px'></td></tr>")
-        html.append("</table>")
-        st.markdown(f"<div class='table-title'>Remuneração {title}</div>", unsafe_allow_html=True)
-        st.markdown("\n".join(html), unsafe_allow_html=True)
+                html.append(
+                    f"<tr class='{row_class}'>"
+                    f"<td class='text-left' style='width:30%'>{desc}</td>"
+                    f"<td class='text-right' style='width:17.5%'>{res_dest.currency} {o:,.2f}</td>"
+                    f"<td class='text-right' style='width:17.5%'>{res_dest.currency} {d:,.2f}</td>"
+                    f"<td class='text-right {cls}' style='width:17.5%'>{var_txt}</td>"
+                    f"<td class='text-center {cls}' style='width:17.5%'>{pct_txt}</td>"
+                    "</tr>"
+                )
+            html.append("<tr><td colspan='5' style='height:8px'></td></tr>")
+            html.append("</table>")
+            st.markdown(f"<div class='table-title'>Remuneração {title}</div>", unsafe_allow_html=True)
+            st.markdown("\n".join(html), unsafe_allow_html=True)
 
         # Benefícios em espécie e depósitos (FGTS/AFP etc.)
         def benefits_map(res, code):
