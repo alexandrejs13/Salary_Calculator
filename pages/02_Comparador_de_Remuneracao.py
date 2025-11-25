@@ -49,6 +49,7 @@ def main():
         unsafe_allow_html=True,
     )
     st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
     st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
     tab_origem, tab_destino = st.tabs(["País de origem", "País de destino"])
 
