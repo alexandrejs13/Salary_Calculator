@@ -112,7 +112,6 @@ def render_country_form(
         min_value=0.0,
         step=100.0,
         key=k("base_salary"),
-        format="%,.2f",
     )
     col2.text_input(
         t(translations, "frequency_label"),
@@ -133,7 +132,6 @@ def render_country_form(
         step=50.0,
         key=k("additions"),
         help=t(translations, "help_other_additions"),
-        format="%,.2f",
     )
     values["in_kind_benefits"] = col5.number_input(
         translations.get("in_kind_benefits_label", "Benefícios em espécie"),
@@ -144,7 +142,6 @@ def render_country_form(
             "help_in_kind_benefits",
             "Adicione benefícios em espécie que não incidem no salário (vale refeição, alimentação, etc.).",
         ),
-        format="%,.2f",
     )
 
     if current_code in ("cl", "us"):
@@ -160,14 +157,12 @@ def render_country_form(
         step=50.0,
         key=k("other_discounts"),
         help=t(translations, "help_other_discounts"),
-        format="%,.2f",
     )
     values["alimony"] = col2.number_input(
         t(translations, "alimony_label"),
         min_value=0.0,
         step=50.0,
         key=k("alimony"),
-        format="%,.2f",
     )
     values["dependents"] = col3.number_input(
         t(translations, "dependents_label"),
@@ -200,7 +195,6 @@ def render_country_form(
             min_value=0.0,
             step=50.0,
             key=k("withholding"),
-            format="%,.2f",
         )
     if current_code == "ca":
         values["additional_withholding"] = col4.number_input(
@@ -208,7 +202,6 @@ def render_country_form(
             min_value=0.0,
             step=50.0,
             key=k("withholding_ca"),
-            format="%,.2f",
         )
 
     col1, col2, col3 = st.columns(3)
@@ -223,14 +216,12 @@ def render_country_form(
         min_value=0.0,
         step=50.0,
         key=k("pension_employer"),
-        format="%,.2f",
     )
     values["pension_employee"] = col3.number_input(
         t(translations, "private_pension_employee_label"),
         min_value=0.0,
         step=50.0,
         key=k("pension_employee"),
-        format="%,.2f",
     )
 
     col1, col2, col3 = st.columns(3)
