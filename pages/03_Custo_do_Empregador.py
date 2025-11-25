@@ -53,7 +53,7 @@ def main():
     country_cfg = find_country_by_label(selected_country) or DEFAULT_COUNTRY
     st.session_state["page3_country_code"] = country_cfg.code
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     base_salary = col1.number_input(
         t(translations, "base_salary_label"),
         min_value=0.0,
@@ -66,89 +66,105 @@ def main():
         step=50.0,
         key="page3_additions",
     )
-    col3, col4 = st.columns(2)
+    in_kind_benefits = col3.number_input(
+        translations.get("in_kind_benefits_label", "Benefícios em espécie"),
+        min_value=0.0,
+        step=50.0,
+        key="page3_in_kind",
+        help=translations.get(
+            "help_in_kind_benefits",
+            "Adicione benefícios em espécie que não incidem no salário (vale refeição, alimentação, etc.).",
+        ),
+    )
+
+    col4, col5, col6 = st.columns(3)
     bonus_percent = col3.number_input(
         t(translations, "bonus_percent_label"),
         min_value=0.0,
         step=1.0,
         key="page3_bonus",
     )
-    col4.text_input(
+    bonus_incidence = col4.selectbox(
+        translations.get("bonus_incidence_label", "Incidências do Bônus"),
+        country_cfg.bonus_incidence,
+        key="page3_bonus_incidence",
+    )
+    pension_employer = col5.number_input(
+        t(translations, "private_pension_employer_label"),
+        min_value=0.0,
+        step=50.0,
+        key="page3_pension_employer",
+    )
+    col6.text_input(
         t(translations, "frequency_label"),
         value=str(country_cfg.annual_frequency),
         disabled=True,
     )
 
     if st.button(translations.get("calculate_button", "Calcular")):
-        annual_salary = base_salary * country_cfg.annual_frequency
-        annual_additions = additions * country_cfg.annual_frequency
-        bonus_value = annual_salary * (bonus_percent / 100)
-        thirteenth = base_salary if country_cfg.annual_frequency > 12 else 0.0
-        vacation = base_salary if country_cfg.code in ["br", "cl", "ar", "co", "mx"] else 0.0
-        total_comp = annual_salary + annual_additions + bonus_value + thirteenth + vacation
+        freq = country_cfg.annual_frequency
+        monthly_base = base_salary + additions
+        currency = CURRENCY_SYMBOL.get(country_cfg.code, "R$")
+        bonus_value = (bonus_percent / 100) * monthly_base * freq
+        inc_lower = (bonus_incidence or "").lower()
+        include_bonus_in_charges = not ("não" in inc_lower or "exent" in inc_lower)
+        thirteenth = monthly_base if freq > 12 else 0.0
+        vacation = monthly_base if country_cfg.code in ["br", "cl", "ar", "co", "mx"] else 0.0
+        vacation_third = monthly_base / 3 if country_cfg.code == "br" else 0.0
+        annual_salary = monthly_base * 12
+        base_components = [
+            ("Salário base + adicionais (12x)", annual_salary, None),
+            ("13º salário" if thirteenth else None, thirteenth, None),
+            ("Férias", vacation, None) if vacation else (None, 0, None),
+            ("1/3 férias", vacation_third, None) if vacation_third else (None, 0, None),
+            ("Bônus", bonus_value, None) if bonus_value else (None, 0, None),
+            ("Benefícios em espécie", in_kind_benefits * freq, None) if in_kind_benefits else (None, 0, None),
+            ("Previdência privada (empregador)", pension_employer * freq, None) if pension_employer else (None, 0, None),
+        ]
+        charge_base = annual_salary + thirteenth + vacation + vacation_third
+        if include_bonus_in_charges:
+            charge_base += bonus_value
+        employer_rows = []
+        for item, rate in EMPLOYER_ITEMS.get(country_cfg.code, []):
+            annual_value = charge_base * rate
+            employer_rows.append((item, rate * 100, annual_value))
 
+        all_rows = []
+        for label, val, rate in base_components:
+            if label and val:
+                all_rows.append((label, rate, val))
+        all_rows.extend(employer_rows)
+        total_cost = sum(val for _, _, val in all_rows)
         st.markdown("### " + translations.get("section_employer_cost", "Custo do empregador"))
         table_html = ["<table class='result-table'>"]
-        currency = CURRENCY_SYMBOL.get(country_cfg.code, "R$")
         table_html.append(
             "<tr>"
             "<th class='text-left'>Item</th>"
             "<th class='text-center'>% empregador</th>"
-            "<th class='text-right'>Valor anual</th>"
             "<th class='text-right'>Valor mensal (12)</th>"
+            "<th class='text-right'>Valor anual</th>"
             "</tr>"
         )
-        base_rows = [
-            ("Salário base (anual)", annual_salary),
-            ("13º salário" if thirteenth else None, thirteenth),
-            ("Férias provisionadas" if vacation else None, vacation),
-            ("Bônus", bonus_value),
-            ("Outros adicionais (anual)", annual_additions),
-        ]
-        for label, val in base_rows:
-            if label:
-                table_html.append(
-                    f"<tr><td class='text-left'>{label}</td><td class='text-center'>—</td><td class='text-right'>{currency} {val:,.2f}</td><td class='text-right'>{currency} {(val/12):,.2f}</td></tr>"
-                )
-
-        for item, rate in EMPLOYER_ITEMS.get(country_cfg.code, []):
-            annual_value = total_comp * rate
+        for label, rate, annual_value in all_rows:
             monthly_value = annual_value / 12
+            rate_txt = f"{rate:.2f}%" if rate else "—"
             table_html.append(
                 f"<tr>"
-                f"<td class='text-left'>{item}</td>"
-                f"<td class='text-center'>{rate*100:.2f}%</td>"
-                f"<td class='text-right'>{currency} {annual_value:,.2f}</td>"
+                f"<td class='text-left'>{label}</td>"
+                f"<td class='text-center'>{rate_txt}</td>"
                 f"<td class='text-right'>{currency} {monthly_value:,.2f}</td>"
+                f"<td class='text-right'>{currency} {annual_value:,.2f}</td>"
                 f"</tr>"
             )
         table_html.append(
             f"<tr class='final-row'>"
             f"<td class='text-left'>Total</td><td></td>"
-            f"<td class='text-right'>{currency} {total_comp:,.2f}</td>"
-        f"<td class='text-right'>{currency} {(total_comp/12):,.2f}</td>"
+            f"<td class='text-right'>{currency} {(total_cost/12):,.2f}</td>"
+        f"<td class='text-right'>{currency} {total_cost:,.2f}</td>"
         f"</tr>"
         )
         table_html.append("</table>")
         st.markdown("\n".join(table_html), unsafe_allow_html=True)
-        factor = country_cfg.annual_frequency
-        linear_12 = total_comp * (12 / factor) if factor else total_comp
-        st.markdown(
-            f"**Fator anual do país:** {factor:.2f} meses. "
-            f"Total anual utilizado: {currency} {total_comp:,.2f}. "
-            f"Em 12 meses lineares, seria aproximadamente {currency} {linear_12:,.2f}."
-        )
-        if EMPLOYER_ITEMS.get(country_cfg.code):
-            st.markdown("#### Incidência resumida")
-            incidence_rows = []
-            for item, rate in EMPLOYER_ITEMS.get(country_cfg.code, []):
-                incidence_rows.append(
-                    f"<tr><td class='text-left'>{item}</td><td class='text-center'>{rate*100:.2f}%</td></tr>"
-                )
-            inc_html = ["<table class='result-table'>", "<tr><th class='text-left'>Encargo</th><th class='text-center'>%</th></tr>"]
-            inc_html.extend(incidence_rows)
-            inc_html.append("</table>")
-            st.markdown("\n".join(inc_html), unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
