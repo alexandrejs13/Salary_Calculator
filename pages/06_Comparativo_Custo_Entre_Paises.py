@@ -26,14 +26,24 @@ COST_DATA = {
 
 def build_table(selection):
     html = ["<table class='result-table'>"]
-    html.append("<tr><th>País</th><th>Total de encargos (%)</th><th>Detalhamento</th></tr>")
+    html.append(
+        "<tr>"
+        "<th class='text-left'>País</th>"
+        "<th class='text-center'>Total de encargos (%)</th>"
+        "<th class='text-left'>Detalhamento</th>"
+        "</tr>"
+    )
     for country in selection:
         data = COST_DATA.get(country)
         if not data:
             continue
         items = "<br/>".join([f"{name} ... {rate*100:.2f}%" for name, rate in data["items"]])
         html.append(
-            f"<tr><td>{country}</td><td style='text-align:center'>{data['total']*100:.2f}%</td><td>{items}</td></tr>"
+            f"<tr>"
+            f"<td class='text-left'>{country}</td>"
+            f"<td class='text-center'>{data['total']*100:.2f}%</td>"
+            f"<td class='text-left'>{items}</td>"
+            f"</tr>"
         )
     html.append("</table>")
     return "\n".join(html)
@@ -41,6 +51,16 @@ def build_table(selection):
 
 def main():
     translations = init_page("page_06_title")
+    st.markdown(
+        "<div class='title-row'>"
+        "<h1>Comparativo de Custo entre Países</h1>"
+        "<span></span>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+
     country_names = [cfg.label for cfg in COUNTRIES.values()]
     selection = st.multiselect(
         translations.get("multi_country_label", "Países para comparação"),

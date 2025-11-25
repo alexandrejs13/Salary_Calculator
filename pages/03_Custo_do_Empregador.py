@@ -3,7 +3,7 @@ import streamlit as st
 from engines.calculator import CURRENCY_SYMBOL
 from engines.countries import COUNTRIES, DEFAULT_COUNTRY, find_country_by_label
 from engines.i18n import t
-from engines.ui import init_page, render_title_with_flag
+from engines.ui import init_page
 
 
 EMPLOYER_ITEMS = {
@@ -25,6 +25,20 @@ EMPLOYER_ITEMS = {
 def main():
     translations = init_page("page_03_title")
     country_names = [cfg.label for cfg in COUNTRIES.values()]
+    flag_map = {"br": "🇧🇷", "cl": "🇨🇱", "ar": "🇦🇷", "co": "🇨🇴", "mx": "🇲🇽", "us": "🇺🇸", "ca": "🇨🇦"}
+    current_code = st.session_state.get("page3_country_code", "br")
+    current_cfg = COUNTRIES.get(current_code, DEFAULT_COUNTRY)
+
+    st.markdown(
+        "<div class='title-row'>"
+        f"<h1>Custo do Empregador</h1>"
+        f"<span class='title-flag'>{flag_map.get(current_cfg.code, '')}</span>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+
     selected_country = st.selectbox(
         translations.get("country_label", "País"),
         country_names,
@@ -32,10 +46,10 @@ def main():
         key="page3_country_select",
     )
     country_cfg = find_country_by_label(selected_country) or DEFAULT_COUNTRY
+    st.session_state["page3_country_code"] = country_cfg.code
 
-    render_title_with_flag(translations, country_cfg)
+    st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
 
-    st.markdown("<div class='app-container'>", unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     base_salary = col1.number_input(
         t(translations, "base_salary_label"),
@@ -61,7 +75,6 @@ def main():
         value=str(country_cfg.annual_frequency),
         disabled=True,
     )
-    st.markdown("</div>", unsafe_allow_html=True)
 
     if st.button(translations.get("calculate_button", "Calcular")):
         annual_salary = base_salary * country_cfg.annual_frequency
@@ -73,16 +86,30 @@ def main():
         table_html = ["<table class='result-table'>"]
         currency = CURRENCY_SYMBOL.get(country_cfg.code, "R$")
         table_html.append(
-            "<tr><th>Item</th><th>% empregador</th><th>Valor anual</th><th>Valor mensal (12)</th></tr>"
+            "<tr>"
+            "<th class='text-left'>Item</th>"
+            "<th class='text-center'>% empregador</th>"
+            "<th class='text-right'>Valor anual</th>"
+            "<th class='text-right'>Valor mensal (12)</th>"
+            "</tr>"
         )
         for item, rate in EMPLOYER_ITEMS.get(country_cfg.code, []):
             annual_value = total_annual * rate
             monthly_value = annual_value / 12
             table_html.append(
-                f"<tr><td>{item}</td><td>{rate*100:.2f}%</td><td>{currency} {annual_value:,.2f}</td><td>{currency} {monthly_value:,.2f}</td></tr>"
+                f"<tr>"
+                f"<td class='text-left'>{item}</td>"
+                f"<td class='text-center'>{rate*100:.2f}%</td>"
+                f"<td class='text-right'>{currency} {annual_value:,.2f}</td>"
+                f"<td class='text-right'>{currency} {monthly_value:,.2f}</td>"
+                f"</tr>"
             )
         table_html.append(
-            f"<tr class='final-row'><td>Total</td><td></td><td>{currency} {total_annual:,.2f}</td><td>{currency} {(total_annual/12):,.2f}</td></tr>"
+            f"<tr class='final-row'>"
+            f"<td class='text-left'>Total</td><td></td>"
+            f"<td class='text-right'>{currency} {total_annual:,.2f}</td>"
+            f"<td class='text-right'>{currency} {(total_annual/12):,.2f}</td>"
+            f"</tr>"
         )
         table_html.append("</table>")
         st.markdown("\n".join(table_html), unsafe_allow_html=True)

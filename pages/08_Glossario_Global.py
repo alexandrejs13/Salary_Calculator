@@ -22,6 +22,16 @@ EQUIVALENCIAS = [
 
 def main():
     translations = init_page("page_08_title")
+    st.markdown(
+        "<div class='title-row'>"
+        "<h1>Glossário Global</h1>"
+        "<span></span>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+
     st.markdown("### " + translations.get("glossary_header", "Glossário"))
     st.markdown(translations.get("glossary_intro", "Definições padronizadas."))
 

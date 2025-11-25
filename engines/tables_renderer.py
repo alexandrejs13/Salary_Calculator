@@ -27,9 +27,9 @@ def render_three_column_table(
     table_html = ["<table class='result-table'>"]
     table_html.append(
         "<tr>"
-        f"<th>{columns_labels.get('description', 'Descrição')}</th>"
-        f"<th>{columns_labels.get('percent', '%')}</th>"
-        f"<th>{columns_labels.get('value', 'Valor')}</th>"
+        f"<th class='text-left'>{columns_labels.get('description', 'Descrição')}</th>"
+        f"<th class='text-center'>{columns_labels.get('percent', '%')}</th>"
+        f"<th class='text-right'>{columns_labels.get('value', 'Valor')}</th>"
         "</tr>"
     )
     for row in filtered_rows:
@@ -37,13 +37,13 @@ def render_three_column_table(
         value = format_currency(row["value"], currency)
         table_html.append(
             "<tr>"
-            f"<td>{row['description']}</td>"
-            f"<td>{row['percent']}%</td>"
-            f"<td class='{cls}'>{value}</td>"
+            f"<td class='text-left'>{row['description']}</td>"
+            f"<td class='text-center'>{row['percent']}%</td>"
+            f"<td class='text-right {cls}'>{value}</td>"
             "</tr>"
         )
     table_html.append(
-        f"<tr class='final-row'><td>{_capitalize_first(final_label)}</td><td></td><td>{format_currency(final_value, currency)}</td></tr>"
+        f"<tr class='final-row'><td class='text-left'>{_capitalize_first(final_label)}</td><td></td><td class='text-right'>{format_currency(final_value, currency)}</td></tr>"
     )
     table_html.append("</table>")
     st.markdown("\n".join(table_html), unsafe_allow_html=True)

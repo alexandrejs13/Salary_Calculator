@@ -29,6 +29,17 @@ COST_OF_LIVING = {
 def main():
     translations = init_page("page_09_title")
     country_names = [cfg.label for cfg in COUNTRIES.values()]
+
+    st.markdown(
+        "<div class='title-row'>"
+        "<h1>Equivalência Internacional</h1>"
+        "<span></span>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+    st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+
     origin = st.selectbox(t(translations, "origin_country"), country_names, index=0, key="page9_origin")
     destination = st.selectbox(t(translations, "destination_country"), country_names, index=1, key="page9_dest")
     salary = st.number_input(t(translations, "base_salary_label"), min_value=0.0, step=100.0)
@@ -49,8 +60,22 @@ def main():
         if consider_cost:
             salary_equivalent *= 1.05
 
+        st.markdown("#### Metodologia")
         st.markdown(
-            f"**{origin} → {destination}:** {salary_equivalent:,.2f} (ajustado por PPP e custo de vida)"
+            "- Ajuste inicial por Paridade de Poder de Compra (PPP): convertemos o salário para poder de compra equivalente.\n"
+            "- Ajuste por custo de vida relativo: aplicamos a razão do custo médio entre destino e origem.\n"
+            "- Opcional: custo do empregador adiciona um fator de 5% para simular benefícios/custos indiretos."
+        )
+
+        html = ["<table class='result-table'>"]
+        html.append("<tr><th class='text-left'>Etapa</th><th class='text-right'>Valor</th></tr>")
+        html.append(f"<tr><td class='text-left'>Salário base (+bônus)</td><td class='text-right'>{base:,.2f}</td></tr>")
+        html.append(f"<tr><td class='text-left'>Ajuste PPP (orig/dest)</td><td class='text-right'>{salary_adjusted:,.2f}</td></tr>")
+        html.append(f"<tr><td class='text-left'>Ajuste custo de vida</td><td class='text-right'>{salary_equivalent:,.2f}</td></tr>")
+        html.append("</table>")
+        st.markdown("\n".join(html), unsafe_allow_html=True)
+        st.markdown(
+            f"**Equivalente {origin} → {destination}:** {salary_equivalent:,.2f} (PPP + custo de vida)"
         )
         st.progress(min(max(salary_equivalent / (salary * 2 if salary else 1), 0), 1))
 
