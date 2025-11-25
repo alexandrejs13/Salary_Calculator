@@ -38,6 +38,7 @@ COUNTRIES: Dict[str, CountryConfig] = {
         bonus_incidence=["Afecto solo a impuestos", "Afecto a AFP + Salud", "Exento"],
         extras={
             "salud": ["FONASA (7%)", "ISAPRE (plano privado)"],
+            "previdencia": ["AFP (obrigatório)", "Conta 2 / voluntária", "Sem previdência"],
         },
     ),
     "ar": CountryConfig(
@@ -47,6 +48,9 @@ COUNTRIES: Dict[str, CountryConfig] = {
         annual_frequency=13.0,
         contracts=["Indeterminado", "Plazo fijo", "Autónomo"],
         bonus_incidence=["Afecto a impuestos", "Exento hasta tope legal"],
+        extras={
+            "previdencia": ["SIPA (obrigatório)", "Aporte voluntário", "Sem previdência"],
+        },
     ),
     "co": CountryConfig(
         code="co",
@@ -59,6 +63,9 @@ COUNTRIES: Dict[str, CountryConfig] = {
             "Prestação de Serviços (sem benefícios sociais)",
         ],
         bonus_incidence=["Só imposto", "Imposto + Seguridade Social", "Isento"],
+        extras={
+            "previdencia": ["Fundo obrigatório", "Fundo voluntário", "Sem previdência"],
+        },
     ),
     "mx": CountryConfig(
         code="mx",
@@ -68,6 +75,7 @@ COUNTRIES: Dict[str, CountryConfig] = {
         contracts=["Tiempo Indeterminado", "Tiempo Determinado", "Honorarios"],
         bonus_incidence=["Solo ISR", "ISR + IMSS", "Exento hasta tope legal"],
         extras={
+            "previdencia": ["AFORE (obrigatório)", "Aporte voluntário", "Sem previdência"],
             "estados": [
                 "CDMX",
                 "Estado de México",
@@ -91,6 +99,7 @@ COUNTRIES: Dict[str, CountryConfig] = {
             "Employer Custom Rule",
         ],
         extras={
+            "previdencia": ["401(k)", "Traditional IRA", "Roth IRA", "Sem plano"],
             "states": [
                 "Florida",
                 "Texas",
@@ -128,6 +137,7 @@ COUNTRIES: Dict[str, CountryConfig] = {
             "Exento",
         ],
         extras={
+            "previdencia": ["RRSP", "Pensão do empregador", "TFSA (poupança)", "Sem previdência"],
             "provinces": [
                 "Ontario",
                 "British Columbia",
