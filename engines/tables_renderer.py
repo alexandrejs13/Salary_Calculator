@@ -27,9 +27,9 @@ def render_three_column_table(
     table_html = ["<table class='result-table'>"]
     table_html.append(
         "<tr>"
-        f"<th class='text-left'>{columns_labels.get('description', 'Descrição')}</th>"
-        f"<th class='text-center'>{columns_labels.get('percent', '%')}</th>"
-        f"<th class='text-right'>{columns_labels.get('value', 'Valor')}</th>"
+        f"<th class='text-left' style='width:45%'>{columns_labels.get('description', 'Descrição')}</th>"
+        f"<th class='text-center' style='width:15%'>{columns_labels.get('percent', '%')}</th>"
+        f"<th class='text-right' style='width:40%'>{columns_labels.get('value', 'Valor')}</th>"
         "</tr>"
     )
     for row in filtered_rows:
@@ -37,13 +37,17 @@ def render_three_column_table(
         value = format_currency(row["value"], currency)
         table_html.append(
             "<tr>"
-            f"<td class='text-left'>{row['description']}</td>"
-            f"<td class='text-center'>{row['percent']}%</td>"
-            f"<td class='text-right {cls}'>{value}</td>"
+            f"<td class='text-left' style='width:45%'>{row['description']}</td>"
+            f"<td class='text-center' style='width:15%'>{row['percent']}%</td>"
+            f"<td class='text-right {cls}' style='width:40%'>{value}</td>"
             "</tr>"
         )
     table_html.append(
-        f"<tr class='final-row'><td class='text-left'>{_capitalize_first(final_label)}</td><td></td><td class='text-right'>{format_currency(final_value, currency)}</td></tr>"
+        f"<tr class='final-row'>"
+        f"<td class='text-left' style='width:45%'>{_capitalize_first(final_label)}</td>"
+        f"<td class='text-center' style='width:15%'></td>"
+        f"<td class='text-right' style='width:40%'>{format_currency(final_value, currency)}</td>"
+        f"</tr>"
     )
     table_html.append("</table>")
     st.markdown("\n".join(table_html), unsafe_allow_html=True)
@@ -64,21 +68,28 @@ def render_extra_info(extras: Dict, translations: Dict[str, str], currency: str,
     html = ["<table class='result-table'>"]
     html.append(
         "<tr>"
-        f"<th class='text-left'>{translations.get('table_description', 'Descrição')}</th>"
-        f"<th class='text-right'>{translations.get('table_value', 'Valor')}</th>"
+        f"<th class='text-left' style='width:45%'>{translations.get('table_description', 'Descrição')}</th>"
+        f"<th class='text-center' style='width:15%'>{translations.get('table_percent', '%')}</th>"
+        f"<th class='text-right' style='width:40%'>{translations.get('table_value', 'Valor')}</th>"
         "</tr>"
     )
     total = 0.0
     for label, value in rows:
         total += value
+        pct = (value / total * 100) if total else 0
         html.append(
             "<tr>"
-            f"<td class='text-left'>{label}</td>"
-            f"<td class='text-right'>{format_currency(value, currency)}</td>"
+            f"<td class='text-left' style='width:45%'>{label}</td>"
+            f"<td class='text-center' style='width:15%'>{pct:.2f}%</td>"
+            f"<td class='text-right' style='width:40%'>{format_currency(value, currency)}</td>"
             "</tr>"
         )
     html.append(
-        f"<tr class='final-row'><td class='text-left'>{translations.get('total_label', 'Total')}</td><td class='text-right'>{format_currency(total, currency)}</td></tr>"
+        f"<tr class='final-row'>"
+        f"<td class='text-left' style='width:45%'>{translations.get('total_label', 'Total')}</td>"
+        f"<td class='text-center' style='width:15%'>100%</td>"
+        f"<td class='text-right' style='width:40%'>{format_currency(total, currency)}</td>"
+        f"</tr>"
     )
     html.append("</table>")
     st.markdown("\n".join(html), unsafe_allow_html=True)
