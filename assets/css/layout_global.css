@@ -119,6 +119,17 @@ select,
     display: inline-block;
 }
 
+/* Topic headings below page title */
+h2 {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+h3 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
 /* Buttons */
 .stButton>button {
     background-color: #0F4F59;

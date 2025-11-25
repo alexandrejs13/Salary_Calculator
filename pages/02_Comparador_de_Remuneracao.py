@@ -35,6 +35,8 @@ def main():
     flag_map = {"br": "🇧🇷", "cl": "🇨🇱", "ar": "🇦🇷", "co": "🇨🇴", "mx": "🇲🇽", "us": "🇺🇸", "ca": "🇨🇦"}
     flag_origin = flag_map.get(current_origin, "")
     flag_dest = flag_map.get(current_dest, "")
+    origin_label = f"{flag_origin} {COUNTRIES.get(current_origin, DEFAULT_COUNTRY).label}"
+    dest_label = f"{flag_dest} {COUNTRIES.get(current_dest, DEFAULT_COUNTRY).label}"
     st.markdown(
         "<div class='title-row'>"
         f"<h1>Comparador de Remuneração</h1>"
@@ -77,49 +79,60 @@ def main():
         origin_tax_m = res_origin.monthly_gross - res_origin.net_monthly
         dest_tax_m = res_dest.monthly_gross - res_dest.net_monthly
         origin_tax_m_conv = convert_amount(origin_tax_m, origin_code, dest_code)
+        origin_tax_a = res_origin.annual_gross - res_origin.net_annual
+        dest_tax_a = res_dest.annual_gross - res_dest.net_annual
+        origin_tax_a_conv = convert_amount(origin_tax_a, origin_code, dest_code)
 
-        rows = [
+        monthly_rows = [
             ("Bruto mensal", origin_to_dest_gross_m, res_dest.monthly_gross),
-            ("Líquido mensal", origin_to_dest_monthly, res_dest.net_monthly),
             ("Impostos/Descontos (mensal)", origin_tax_m_conv, dest_tax_m),
+            ("Líquido mensal", origin_to_dest_monthly, res_dest.net_monthly),
+        ]
+        annual_rows = [
             ("Bruto anual", origin_to_dest_gross_a, res_dest.annual_gross),
+            ("Impostos/Descontos (anual)", origin_tax_a_conv, dest_tax_a),
             ("Líquido anual", origin_to_dest_annual, res_dest.net_annual),
             ("Total anual (bruto + bônus)", origin_to_dest_total, res_dest.total_comp),
         ]
 
-        table_html = ["<table class='result-table'>"]
-        table_html.append(
-            "<tr>"
-            "<th class='text-left'>Descrição</th>"
-            "<th class='text-right'>Origem</th>"
-            "<th class='text-right'>Destino</th>"
-            "<th class='text-right'>Variação</th>"
-            "<th class='text-center'>Variação %</th>"
-            "</tr>"
-        )
-        for desc, o, d in rows:
-            diff = d - o
-            pct = (diff / o * 100) if o else 0
-            cls = "credit" if diff > 0 else "debit" if diff < 0 else ""
-            pct_txt = f"{pct:,.2f}%" if o else "0.00%"
-            var_txt = f"{res_dest.currency} {abs(diff):,.2f}"
-            if diff > 0:
-                var_txt = f"+ {var_txt}"
-            elif diff < 0:
-                var_txt = f"- {var_txt}"
-            table_html.append(
+        def build_table(title, rows):
+            html = ["<table class='result-table'>"]
+            html.append(
                 "<tr>"
-                f"<td class='text-left'>{desc}</td>"
-                f"<td class='text-right'>{res_dest.currency} {o:,.2f}</td>"
-                f"<td class='text-right'>{res_dest.currency} {d:,.2f}</td>"
-                f"<td class='text-right {cls}'>{var_txt}</td>"
-                f"<td class='text-center {cls}'>{pct_txt}</td>"
+                f"<th class='text-left'>Descrição</th>"
+                f"<th class='text-right'>{origin_label}</th>"
+                f"<th class='text-right'>{dest_label}</th>"
+                "<th class='text-right'>Variação</th>"
+                "<th class='text-center'>Variação %</th>"
                 "</tr>"
             )
-        table_html.append("</table>")
+            for desc, o, d in rows:
+                diff = d - o
+                pct = (diff / o * 100) if o else 0
+                cls = "credit" if diff > 0 else "debit" if diff < 0 else ""
+                pct_txt = f"{pct:,.2f}%" if o else "0.00%"
+                var_txt = f"{res_dest.currency} {abs(diff):,.2f}"
+                if diff > 0:
+                    var_txt = f"+ {var_txt}"
+                elif diff < 0:
+                    var_txt = f"- {var_txt}"
+                html.append(
+                    "<tr>"
+                    f"<td class='text-left'>{desc}</td>"
+                    f"<td class='text-right'>{res_dest.currency} {o:,.2f}</td>"
+                    f"<td class='text-right'>{res_dest.currency} {d:,.2f}</td>"
+                    f"<td class='text-right {cls}'>{var_txt}</td>"
+                    f"<td class='text-center {cls}'>{pct_txt}</td>"
+                    "</tr>"
+                )
+            html.append("</table>")
+            st.markdown(f"### {title}")
+            st.markdown("\n".join(html), unsafe_allow_html=True)
 
-        st.markdown("### Comparativo")
-        st.markdown("\n".join(table_html), unsafe_allow_html=True)
+        st.markdown("### Comparativo Mensal")
+        build_table("Mensal", monthly_rows)
+        st.markdown("### Comparativo Anual")
+        build_table("Anual", annual_rows)
 
         # Benefícios em espécie e depósitos (FGTS/AFP etc.)
         def benefits_map(res, code):
@@ -133,28 +146,51 @@ def main():
         dest_ben = benefits_map(res_dest, dest_code)
         all_labels = sorted(set(origin_ben.keys()) | set(dest_ben.keys()))
 
-        ben_html = ["<table class='result-table'>"]
-        ben_html.append(
-            "<tr>"
-            "<th class='text-left'>Benefício/Depósito (mensal)</th>"
-            "<th class='text-right'>Origem</th>"
-            "<th class='text-right'>Destino</th>"
-            "</tr>"
-        )
-        for label in all_labels:
-            o_val = origin_ben.get(label, 0.0)
-            d_val = dest_ben.get(label, 0.0)
-            o_conv = convert_amount(o_val, origin_code, dest_code)
-            ben_html.append(
+        def build_benefits_table(title, origin_vals, dest_vals, annual=False):
+            html = ["<table class='result-table'>"]
+            html.append(
                 "<tr>"
-                f"<td class='text-left'>{label}</td>"
-                f"<td class='text-right'>{res_dest.currency} {o_conv:,.2f}</td>"
-                f"<td class='text-right'>{res_dest.currency} {d_val:,.2f}</td>"
+                f"<th class='text-left'>{title}</th>"
+                f"<th class='text-right'>{origin_label}</th>"
+                f"<th class='text-right'>{dest_label}</th>"
+                "<th class='text-right'>Variação</th>"
+                "<th class='text-center'>Variação %</th>"
                 "</tr>"
             )
-        ben_html.append("</table>")
+            for label in sorted(all_labels):
+                o_val = origin_vals.get(label, 0.0)
+                d_val = dest_vals.get(label, 0.0)
+                o_conv = convert_amount(o_val, origin_code, dest_code)
+                diff = d_val - o_conv
+                pct = (diff / o_conv * 100) if o_conv else 0
+                cls = "credit" if diff > 0 else "debit" if diff < 0 else ""
+                pct_txt = f"{pct:,.2f}%" if o_conv else "0.00%"
+                var_txt = f"{res_dest.currency} {abs(diff):,.2f}"
+                if diff > 0:
+                    var_txt = f"+ {var_txt}"
+                elif diff < 0:
+                    var_txt = f"- {var_txt}"
+                html.append(
+                    "<tr>"
+                    f"<td class='text-left'>{label}</td>"
+                    f"<td class='text-right'>{res_dest.currency} {o_conv:,.2f}</td>"
+                    f"<td class='text-right'>{res_dest.currency} {d_val:,.2f}</td>"
+                    f"<td class='text-right {cls}'>{var_txt}</td>"
+                    f"<td class='text-center {cls}'>{pct_txt}</td>"
+                    "</tr>"
+                )
+            html.append("</table>")
+            st.markdown("\n".join(html), unsafe_allow_html=True)
+
+        origin_ben_month = origin_ben
+        dest_ben_month = dest_ben
+        origin_ben_annual = {k: v * COUNTRIES.get(origin_code, DEFAULT_COUNTRY).annual_frequency for k, v in origin_ben_month.items()}
+        dest_ben_annual = {k: v * COUNTRIES.get(dest_code, DEFAULT_COUNTRY).annual_frequency for k, v in dest_ben_month.items()}
+
         st.markdown("### Benefícios e depósitos (mensal)")
-        st.markdown("\n".join(ben_html), unsafe_allow_html=True)
+        build_benefits_table("Benefício/Depósito (mês)", origin_ben_month, dest_ben_month)
+        st.markdown("### Benefícios e depósitos (anual)")
+        build_benefits_table("Benefício/Depósito (ano)", origin_ben_annual, dest_ben_annual)
 
 
 if __name__ == "__main__":
