@@ -21,7 +21,7 @@ def render_three_column_table(
     currency: str,
     columns_labels: Dict[str, str],
 ) -> None:
-    st.markdown(f"**{title}**")
+    st.markdown(f"<div class='table-title'>{title}</div>", unsafe_allow_html=True)
     filtered_rows = [r for r in rows if abs(r.get("value", 0)) > 1e-9]
     final_value = sum(r["value"] for r in filtered_rows)
     table_html = ["<table class='result-table'>"]
@@ -64,7 +64,7 @@ def render_extra_info(extras: Dict, translations: Dict[str, str], currency: str,
         return
 
     st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
-    st.markdown("### Benefícios e depósitos")
+    st.markdown("<div class='table-title'>Benefícios e depósitos</div>", unsafe_allow_html=True)
     html = ["<table class='result-table'>"]
     html.append(
         "<tr>"

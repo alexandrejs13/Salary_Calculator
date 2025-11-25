@@ -135,7 +135,7 @@ def main():
                     "</tr>"
                 )
             html.append("</table>")
-            st.markdown(f"### Remuneração {title}")
+            st.markdown(f"<div class='table-title'>Remuneração {title}</div>", unsafe_allow_html=True)
             st.markdown("\n".join(html), unsafe_allow_html=True)
 
         # Benefícios em espécie e depósitos (FGTS/AFP etc.)
@@ -217,12 +217,12 @@ def main():
         with tab_m:
             build_table("Mensal", monthly_rows)
             st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
-            st.markdown("### Benefícios e depósitos")
+            st.markdown("<div class='table-title'>Benefícios e depósitos</div>", unsafe_allow_html=True)
             build_benefits_table(origin_ben_month, dest_ben_month)
         with tab_a:
             build_table("Anual", annual_rows)
             st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
-            st.markdown("### Benefícios e depósitos")
+            st.markdown("<div class='table-title'>Benefícios e depósitos</div>", unsafe_allow_html=True)
             build_benefits_table(origin_ben_annual, dest_ben_annual)
 
 
