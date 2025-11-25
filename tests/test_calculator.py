@@ -39,6 +39,7 @@ def test_bonus_value_respects_percentage():
 def test_brazil_progressive_inss_and_irrf_applied():
     base = 8000.0
     dependents = 2
+    previd_priv = 500.0
     inputs = {
         "base_salary": base,
         "other_additions": 0,
@@ -46,11 +47,12 @@ def test_brazil_progressive_inss_and_irrf_applied():
         "dependents": dependents,
         "alimony": 0,
         "other_discounts": 0,
+        "pension_employee": previd_priv,
     }
     res = calculate_compensation("br", inputs)
     expected_inss = inss_br(base)
-    expected_irrf = irrf_br(base, dependents, 0)
-    expected_net = base - expected_inss - expected_irrf
+    expected_irrf = irrf_br(base, dependents, 0, previd_priv)
+    expected_net = base - expected_inss - expected_irrf - previd_priv
     assert pytest.approx(res.net_monthly, rel=1e-3) == expected_net
     fgts = next(val for name, val in res.extras["benefits_monthly"] if name == "FGTS")
     assert pytest.approx(fgts, rel=1e-3) == base * 0.08
@@ -84,12 +86,20 @@ def test_usa_fica_and_dependents_reduction():
         "dependents": dependents,
     }
     res = calculate_compensation("us", inputs)
-    ss = base * 0.062
+    ss_base = min(base, 14050)
+    ss = ss_base * 0.062
     medicare = base * 0.0145
     expected_social = ss + medicare
     expected_income = (base - expected_social - dependents * 300) * 0.12
     net_expected = base - expected_social - expected_income
     assert pytest.approx(res.net_monthly, rel=1e-3) == net_expected
+
+
+def test_inss_br_respects_ceiling():
+    base_high = 20000.0
+    capped = inss_br(base_high)
+    capped_expected = inss_br(7786.02)
+    assert pytest.approx(capped, rel=1e-3) == capped_expected
 
 
 @pytest.mark.parametrize(

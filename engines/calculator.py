@@ -46,19 +46,30 @@ def progressive_tax(base: float, brackets: List[Tuple[float, float, float]]) -> 
 
 
 def inss_br(base: float) -> float:
-    # Simplified 2024/2025 brackets
-    brackets = [
-        (1412.00, 0.075, 0.0),
-        (2666.68, 0.09, 21.18),
-        (4000.03, 0.12, 91.0),
-        (7786.02, 0.14, 163.82),
+    # Progressivo com teto mensal ~R$7.786,02
+    cap = 7786.02
+    taxable = min(base, cap)
+    bands = [
+        (1412.00, 0.075),
+        (2666.68, 0.09),
+        (4000.03, 0.12),
+        (cap, 0.14),
     ]
-    return progressive_tax(base, brackets)
+    previous = 0.0
+    total = 0.0
+    for limit, rate in bands:
+        if taxable > previous:
+            portion = min(taxable, limit) - previous
+            total += portion * rate
+            previous = limit
+        else:
+            break
+    return total
 
 
-def irrf_br(base: float, dependents: int, pensao: float) -> float:
+def irrf_br(base: float, dependents: int, pensao: float, previd_privada: float = 0.0) -> float:
     deduction_dep = 189.59 * dependents
-    taxable = max(base - deduction_dep - pensao - inss_br(base), 0)
+    taxable = max(base - deduction_dep - pensao - previd_privada - inss_br(base), 0)
     brackets = [
         (2112.0, 0.0, 0.0),
         (2826.65, 0.075, 158.4),
@@ -86,7 +97,7 @@ def compute_country_taxes(code: str, gross_monthly: float, bonus_value: float, i
 
     if code == "br":
         social_security = inss_br(gross_monthly)
-        income_tax = irrf_br(gross_monthly + bonus_value / 12, int(dependents), alimony)
+        income_tax = irrf_br(gross_monthly + bonus_value / 12, int(dependents), alimony, pension_employee)
         employer_cost = gross_monthly * 0.2 + gross_monthly * 0.08
         notes.append("INSS progressivo e IRRF simplificados conforme faixas atuais.")
     elif code == "cl":
@@ -119,15 +130,19 @@ def compute_country_taxes(code: str, gross_monthly: float, bonus_value: float, i
         employer_cost = gross_monthly * 0.20
         notes.append("IMSS (cuota obrera automática) e ISR linear para ilustração.")
     elif code == "us":
-        ss = gross_monthly * 0.062
+        ss_cap_month = 14050  # teto aproximado mensal do Social Security
+        ss_base = min(gross_monthly, ss_cap_month)
+        ss = ss_base * 0.062
         medicare = gross_monthly * 0.0145
         social_security = ss + medicare
         income_tax = max((gross_monthly - social_security - dependents * 300) * 0.12, 0)
         employer_cost = ss + medicare
         notes.append("FICA (6.2% + 1.45%) e imposto federal linear.")
     elif code == "ca":
-        cpp = gross_monthly * 0.0595
-        ei = gross_monthly * 0.0163
+        cpp_cap_month = 6133  # aproximado (YMPE/12)
+        ei_cap_month = 5291   # aproximado
+        cpp = min(gross_monthly, cpp_cap_month) * 0.0595
+        ei = min(gross_monthly, ei_cap_month) * 0.0163
         social_security = cpp + ei
         income_tax = max((gross_monthly - social_security - dependents * 200) * 0.15, 0)
         employer_cost = gross_monthly * 0.075
