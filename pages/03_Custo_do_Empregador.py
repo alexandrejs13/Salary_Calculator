@@ -80,7 +80,9 @@ def main():
         annual_salary = base_salary * country_cfg.annual_frequency
         annual_additions = additions * country_cfg.annual_frequency
         bonus_value = annual_salary * (bonus_percent / 100)
-        total_annual = annual_salary + annual_additions + bonus_value
+        thirteenth = base_salary if country_cfg.annual_frequency > 12 else 0.0
+        vacation = base_salary if country_cfg.code in ["br", "cl", "ar", "co", "mx"] else 0.0
+        total_comp = annual_salary + annual_additions + bonus_value + thirteenth + vacation
 
         st.markdown("### " + translations.get("section_employer_cost", "Custo do empregador"))
         table_html = ["<table class='result-table'>"]
@@ -93,8 +95,21 @@ def main():
             "<th class='text-right'>Valor mensal (12)</th>"
             "</tr>"
         )
+        base_rows = [
+            ("Salário base (anual)", annual_salary),
+            ("13º salário" if thirteenth else None, thirteenth),
+            ("Férias provisionadas" if vacation else None, vacation),
+            ("Bônus", bonus_value),
+            ("Outros adicionais (anual)", annual_additions),
+        ]
+        for label, val in base_rows:
+            if label:
+                table_html.append(
+                    f"<tr><td class='text-left'>{label}</td><td class='text-center'>—</td><td class='text-right'>{currency} {val:,.2f}</td><td class='text-right'>{currency} {(val/12):,.2f}</td></tr>"
+                )
+
         for item, rate in EMPLOYER_ITEMS.get(country_cfg.code, []):
-            annual_value = total_annual * rate
+            annual_value = total_comp * rate
             monthly_value = annual_value / 12
             table_html.append(
                 f"<tr>"
@@ -107,8 +122,8 @@ def main():
         table_html.append(
             f"<tr class='final-row'>"
             f"<td class='text-left'>Total</td><td></td>"
-            f"<td class='text-right'>{currency} {total_annual:,.2f}</td>"
-            f"<td class='text-right'>{currency} {(total_annual/12):,.2f}</td>"
+            f"<td class='text-right'>{currency} {total_comp:,.2f}</td>"
+            f"<td class='text-right'>{currency} {(total_comp/12):,.2f}</td>"
             f"</tr>"
         )
         table_html.append("</table>")
