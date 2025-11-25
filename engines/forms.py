@@ -31,12 +31,6 @@ def render_country_form(
         if selected:
             st.session_state[session_code_key] = label_to_code.get(selected, current_code)
 
-    # Seção de localização
-    st.markdown(
-        f"<div style='margin-top:6px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_location_contract'))}</div>",
-        unsafe_allow_html=True,
-    )
-
     # Primeira linha: país + campos variáveis por país (país na primeira coluna)
     if current_code == "ca":
         country_col, province_col, contract_col, adj_col = st.columns([1, 1, 1, 1])
@@ -112,11 +106,6 @@ def render_country_form(
             key=k("contract"),
         )
 
-    # Base de cálculo
-    st.markdown(
-        f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_base_calc'))}</div>",
-        unsafe_allow_html=True,
-    )
     col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
     values["base_salary"] = col1.number_input(
         t(translations, "base_salary_label"),
@@ -145,11 +134,6 @@ def render_country_form(
         help=t(translations, "help_other_additions"),
     )
 
-    # Descontos
-    st.markdown(
-        f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_discounts'))}</div>",
-        unsafe_allow_html=True,
-    )
     if current_code in ("cl", "us"):
         col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
     elif current_code == "ca":
@@ -210,11 +194,6 @@ def render_country_form(
             key=k("withholding_ca"),
         )
 
-    # Previdência privada
-    st.markdown(
-        f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_private_pension'))}</div>",
-        unsafe_allow_html=True,
-    )
     col1, col2, col3 = st.columns(3)
     pension_options = cfg.extras.get("previdencia", ["PGBL", "VGBL", "FGBL"])
     values["pension_type"] = col1.selectbox(
@@ -235,11 +214,6 @@ def render_country_form(
         key=k("pension_employee"),
     )
 
-    # Bônus
-    st.markdown(
-        f"<div style='margin-top:10px;margin-bottom:2px;font-weight:700'>{_section_title(t(translations, 'section_bonus'))}</div>",
-        unsafe_allow_html=True,
-    )
     col1, col2, col3 = st.columns(3)
     values["bonus_percent"] = col1.number_input(
         t(translations, "bonus_percent_label"),
