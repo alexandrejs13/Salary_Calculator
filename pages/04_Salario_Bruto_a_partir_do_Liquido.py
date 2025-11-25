@@ -27,7 +27,7 @@ def main():
     current_cfg = COUNTRIES.get(current_code, DEFAULT_COUNTRY)
     st.markdown(
         "<div class='title-row'>"
-        f"<h1>Salário Bruto a partir do Líquido</h1>"
+        f"<h1>{translations.get('page_04_title', 'Salário Bruto a partir do Líquido')}</h1>"
         f"<span class='title-flag'>{flag_map.get(current_cfg.code, '')}</span>"
         "</div>",
         unsafe_allow_html=True,
@@ -35,7 +35,10 @@ def main():
     st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
     st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
 
-    st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div class='title-card'>{translations.get('parameters_title', 'Parâmetros de cálculo da remuneração')}</div>",
+        unsafe_allow_html=True,
+    )
 
     selected_country = st.selectbox(
         translations.get("country_label", "País"),

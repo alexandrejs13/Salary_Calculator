@@ -32,7 +32,7 @@ def main():
 
     st.markdown(
         "<div class='title-row'>"
-        "<h1>Equivalência Internacional</h1>"
+        f"<h1>{translations.get('page_09_title', 'Equivalência Internacional')}</h1>"
         "<span></span>"
         "</div>",
         unsafe_allow_html=True,

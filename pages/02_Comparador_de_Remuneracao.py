@@ -39,7 +39,7 @@ def main():
     dest_label = f"{flag_dest} {COUNTRIES.get(current_dest, DEFAULT_COUNTRY).label}"
     st.markdown(
         "<div class='title-row'>"
-        f"<h1>Comparador de Remuneração</h1>"
+        f"<h1>{translations.get('page_02_title', 'Comparador de Remuneração')}</h1>"
         f"<span style='display:flex; gap:8px; align-items:center;'>"
         f"<span class='title-flag'>{flag_origin}</span>"
         f"<span class='title-flag'>{flag_dest}</span>"
@@ -50,21 +50,29 @@ def main():
     st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
     st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
 
-    tab_origem, tab_destino = st.tabs(["País de origem", "País de destino"])
+    tab_origem, tab_destino = st.tabs(
+        [translations.get("origin_country", "País de origem"), translations.get("destination_country", "País de destino")]
+    )
 
     with tab_origem:
-        st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
+        st.markdown(
+            f"<div class='title-card'>{translations.get('parameters_title', 'Parâmetros de cálculo da remuneração')}</div>",
+            unsafe_allow_html=True,
+        )
         values_origin = render_country_form(current_origin, translations, prefix="origin", allow_country_select=True)
         st.session_state["page2_origin_code"] = values_origin.get("country_code", current_origin)
 
     with tab_destino:
-        st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
+        st.markdown(
+            f"<div class='title-card'>{translations.get('parameters_title', 'Parâmetros de cálculo da remuneração')}</div>",
+            unsafe_allow_html=True,
+        )
         values_dest = render_country_form(current_dest, translations, prefix="dest", allow_country_select=True)
         st.session_state["page2_dest_code"] = values_dest.get("country_code", current_dest)
 
     st.markdown("<hr style='margin-top:6px;margin-bottom:20px'/>", unsafe_allow_html=True)
 
-    if st.button("Comparar Remuneração"):
+    if st.button(translations.get("compare_button", "Comparar Remuneração")):
         origin_code = values_origin.get("country_code", current_origin)
         dest_code = values_dest.get("country_code", current_dest)
         res_origin = calculate_compensation(origin_code, values_origin)
@@ -217,12 +225,18 @@ def main():
         with tab_m:
             build_table("Mensal", monthly_rows)
             st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
-            st.markdown("<div class='table-title'>Benefícios e depósitos</div>", unsafe_allow_html=True)
+            st.markdown(
+                f"<div class='table-title'>{translations.get('benefits_title', 'Benefícios e depósitos')}</div>",
+                unsafe_allow_html=True,
+            )
             build_benefits_table(origin_ben_month, dest_ben_month)
         with tab_a:
             build_table("Anual", annual_rows)
             st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
-            st.markdown("<div class='table-title'>Benefícios e depósitos</div>", unsafe_allow_html=True)
+            st.markdown(
+                f"<div class='table-title'>{translations.get('benefits_title', 'Benefícios e depósitos')}</div>",
+                unsafe_allow_html=True,
+            )
             build_benefits_table(origin_ben_annual, dest_ben_annual)
 
 

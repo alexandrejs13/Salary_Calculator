@@ -24,7 +24,7 @@ def main():
     translations = init_page("page_08_title")
     st.markdown(
         "<div class='title-row'>"
-        "<h1>Glossário Global</h1>"
+        f"<h1>{translations.get('page_08_title', 'Glossário Global')}</h1>"
         "<span></span>"
         "</div>",
         unsafe_allow_html=True,

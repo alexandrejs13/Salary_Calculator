@@ -53,7 +53,7 @@ def main():
     translations = init_page("page_06_title")
     st.markdown(
         "<div class='title-row'>"
-        "<h1>Comparativo de Custo entre Países</h1>"
+        f"<h1>{translations.get('page_06_title', 'Comparativo de Custo entre Países')}</h1>"
         "<span></span>"
         "</div>",
         unsafe_allow_html=True,

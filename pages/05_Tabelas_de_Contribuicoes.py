@@ -130,7 +130,7 @@ def main():
     current_cfg = COUNTRIES.get(current_code, DEFAULT_COUNTRY)
     st.markdown(
         "<div class='title-row'>"
-        f"<h1>Tabelas de Contribuições</h1>"
+        f"<h1>{translations.get('page_05_title', 'Tabelas de Contribuições')}</h1>"
         f"<span class='title-flag'>{flag_map.get(current_cfg.code, '')}</span>"
         "</div>",
         unsafe_allow_html=True,
@@ -140,9 +140,17 @@ def main():
 
     vigencia, link = VIGENCIA_LINKS.get(country_cfg.code, ("Vigência 2025 (referência genérica)", ""))
     st.markdown(f"**{vigencia}**" + (f" — Fonte oficial: [{link}]({link})" if link else ""))
-    st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div class='title-card'>{translations.get('parameters_title', 'Parâmetros de cálculo da remuneração')}</div>",
+        unsafe_allow_html=True,
+    )
 
-    selected_country = st.selectbox("País", country_names, index=0, key="page5_country_select")
+    selected_country = st.selectbox(
+        translations.get("country_label", "País"),
+        country_names,
+        index=0,
+        key="page5_country_select",
+    )
     country_cfg = find_country_by_label(selected_country) or DEFAULT_COUNTRY
     st.session_state["page5_country_code"] = country_cfg.code
 
