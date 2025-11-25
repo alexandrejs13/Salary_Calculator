@@ -45,15 +45,18 @@ def main():
     st.markdown("#### Parâmetros de cálculo da remuneração", unsafe_allow_html=True)
     st.markdown("<hr style='margin-top:0;margin-bottom:8px'/>", unsafe_allow_html=True)
 
-    tab_origem, tab_destino = st.tabs(["País de origem", "País de destino"])
+    with st.container():
+        st.markdown("<div class='form-shell'>", unsafe_allow_html=True)
+        tab_origem, tab_destino = st.tabs(["País de origem", "País de destino"])
 
-    with tab_origem:
-        values_origin = render_country_form(current_origin, translations, prefix="origin", allow_country_select=True)
-        st.session_state["page2_origin_code"] = values_origin.get("country_code", current_origin)
+        with tab_origem:
+            values_origin = render_country_form(current_origin, translations, prefix="origin", allow_country_select=True)
+            st.session_state["page2_origin_code"] = values_origin.get("country_code", current_origin)
 
-    with tab_destino:
-        values_dest = render_country_form(current_dest, translations, prefix="dest", allow_country_select=True)
-        st.session_state["page2_dest_code"] = values_dest.get("country_code", current_dest)
+        with tab_destino:
+            values_dest = render_country_form(current_dest, translations, prefix="dest", allow_country_select=True)
+            st.session_state["page2_dest_code"] = values_dest.get("country_code", current_dest)
+        st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("<hr style='margin-top:6px;margin-bottom:20px'/>", unsafe_allow_html=True)
 
