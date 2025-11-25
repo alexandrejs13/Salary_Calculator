@@ -36,7 +36,7 @@ def main():
     flag_emoji = {"br": "🇧🇷", "cl": "🇨🇱", "ar": "🇦🇷", "co": "🇨🇴", "mx": "🇲🇽", "us": "🇺🇸", "ca": "🇨🇦"}.get(dest_flag, "")
     st.markdown(
         "<div class='title-row'>"
-        f"<h1>Comparador de Remuneração – Região Américas</h1>"
+        f"<h1>Comparador de Remuneração</h1>"
         f"<span style='font-size:36px'>{flag_emoji}</span>"
         "</div>",
         unsafe_allow_html=True,
@@ -44,7 +44,7 @@ def main():
     st.markdown(
         "<div style='height:6px;display:flex;justify-content:space-between;align-items:center;'>"
         "<div>"
-        "<div style='font-size:16px; font-weight:600;'>Comparador de Remuneração – Região Américas</div>"
+        "<div style='font-size:16px; font-weight:600;'>Região Américas</div>"
         "<div style='font-size:12px; color:#666;'>Calcule salários, bônus e descontos por país</div>"
         "</div>"
         "<div style='font-size:12px; color:#666;'>Atualize origem e destino para comparar pacotes</div>"

@@ -13,16 +13,17 @@ def main():
     current_code = st.session_state.get("page1_country_code", "br")
     country_cfg = COUNTRIES.get(current_code, DEFAULT_COUNTRY)
 
-    render_title_with_flag(translations, country_cfg)
+    st.markdown(
+        "<div class='title-row'>"
+        f"<h1>Simulador de Remuneração</h1>"
+        f"<span class='title-flag'>🇧🇷</span>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
     st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
     st.markdown(
-        "<div style='display:flex;justify-content:space-between;align-items:center;'>"
-        "<div>"
-        "<div style='font-size:16px; font-weight:600;'>Simulador de Remuneração – Região Américas</div>"
-        "<div style='font-size:12px; color:#666;'>Calcule salários, bônus e descontos por país</div>"
-        "</div>"
-        "<div style='font-size:12px; color:#666;'>Atualize o país no formulário para ver o layout dinâmico</div>"
-        "</div>",
+        "<div style='font-size:16px; font-weight:600;'>Região Américas</div>"
+        "<div style='font-size:12px; color:#666;'>Calcule salários, bônus e descontos por país</div>",
         unsafe_allow_html=True,
     )
     st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)

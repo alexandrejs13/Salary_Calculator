@@ -61,8 +61,12 @@ select,
 .stNumberInput .st-bf,
 .stNumberInput .st-c5 {
     background: #F5F5F5 !important;
-    border: 1px solid #E0E0E0 !important;
+    border: 1px solid #F5F5F5 !important;
     box-shadow: none !important;
+    padding: 8px 10px !important;
+    border-radius: 6px !important;
+    min-height: 40px !important;
+    line-height: 1.35 !important;
 }
 
 
@@ -82,7 +86,7 @@ select,
 }
 
 .title-flag {
-    height: 36px;
+    height: 32px;
     width: auto;
 }
 
@@ -172,6 +176,7 @@ select,
     min-width: 280px;
     max-width: 320px;
     overflow: hidden !important;
+    font-size: 14px;
 }
 
 /* Responsiveness */
