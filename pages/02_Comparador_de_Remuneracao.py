@@ -37,7 +37,7 @@ def main():
     st.markdown(
         "<div class='title-row'>"
         f"<h1>Comparador de Remuneração</h1>"
-        f"<span style='font-size:36px'>{flag_emoji}</span>"
+        f"<span style='font-size:40px'>{flag_emoji}</span>"
         "</div>",
         unsafe_allow_html=True,
     )
