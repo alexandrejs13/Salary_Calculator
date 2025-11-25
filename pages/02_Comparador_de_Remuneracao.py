@@ -73,7 +73,6 @@ def main():
         # Converter valores do país de origem para a moeda do destino (se diferente)
         origin_to_dest_monthly = convert_amount(res_origin.net_monthly, origin_code, dest_code)
         origin_to_dest_annual = convert_amount(res_origin.net_annual, origin_code, dest_code)
-        origin_to_dest_total = convert_amount(res_origin.total_comp, origin_code, dest_code)
         origin_to_dest_gross_m = convert_amount(res_origin.monthly_gross, origin_code, dest_code)
         origin_to_dest_gross_a = convert_amount(res_origin.annual_gross, origin_code, dest_code)
         origin_tax_m = res_origin.monthly_gross - res_origin.net_monthly
@@ -82,17 +81,32 @@ def main():
         origin_tax_a = res_origin.annual_gross - res_origin.net_annual
         dest_tax_a = res_dest.annual_gross - res_dest.net_annual
         origin_tax_a_conv = convert_amount(origin_tax_a, origin_code, dest_code)
+        origin_base = convert_amount(float(values_origin.get("base_salary") or 0), origin_code, dest_code)
+        dest_base = float(values_dest.get("base_salary") or 0)
+        origin_add = convert_amount(float(values_origin.get("other_additions") or 0), origin_code, dest_code)
+        dest_add = float(values_dest.get("other_additions") or 0)
+        origin_in_kind = convert_amount(float(values_origin.get("in_kind_benefits") or 0), origin_code, dest_code)
+        dest_in_kind = float(values_dest.get("in_kind_benefits") or 0)
+        origin_bonus_month = convert_amount(res_origin.bonus_value / COUNTRIES.get(origin_code, DEFAULT_COUNTRY).annual_frequency, origin_code, dest_code)
+        dest_bonus_month = res_dest.bonus_value / COUNTRIES.get(dest_code, DEFAULT_COUNTRY).annual_frequency
+        origin_bonus_annual = convert_amount(res_origin.bonus_value, origin_code, dest_code)
+        dest_bonus_annual = res_dest.bonus_value
 
         monthly_rows = [
-            ("Bruto mensal", origin_to_dest_gross_m, res_dest.monthly_gross),
+            ("Salário Base", origin_base, dest_base),
+            ("Outros Adicionais", origin_add, dest_add),
+            ("Benefícios em espécie", origin_in_kind, dest_in_kind),
+            ("Bônus (mensal equiv.)", origin_bonus_month, dest_bonus_month),
             ("Impostos/Descontos (mensal)", origin_tax_m_conv, dest_tax_m),
             ("Líquido mensal", origin_to_dest_monthly, res_dest.net_monthly),
         ]
         annual_rows = [
-            ("Bruto anual", origin_to_dest_gross_a, res_dest.annual_gross),
+            ("Salário Anual", origin_to_dest_gross_a, res_dest.annual_gross),
+            ("Outros Adicionais (anual)", origin_add * COUNTRIES.get(dest_code, DEFAULT_COUNTRY).annual_frequency, dest_add * COUNTRIES.get(dest_code, DEFAULT_COUNTRY).annual_frequency),
+            ("Benefícios em espécie (anual)", origin_in_kind * COUNTRIES.get(dest_code, DEFAULT_COUNTRY).annual_frequency, dest_in_kind * COUNTRIES.get(dest_code, DEFAULT_COUNTRY).annual_frequency),
+            ("Bônus Anual", origin_bonus_annual, dest_bonus_annual),
             ("Impostos/Descontos (anual)", origin_tax_a_conv, dest_tax_a),
             ("Líquido anual", origin_to_dest_annual, res_dest.net_annual),
-            ("Total anual (bruto + bônus)", origin_to_dest_total, res_dest.total_comp),
         ]
 
         def build_table(title, rows):
