@@ -138,13 +138,13 @@ def main():
     st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
     st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
 
-    selected_country = st.selectbox("País", country_names, index=0, key="page5_country_select")
-    country_cfg = find_country_by_label(selected_country) or DEFAULT_COUNTRY
-    st.session_state["page5_country_code"] = country_cfg.code
-
     vigencia, link = VIGENCIA_LINKS.get(country_cfg.code, ("Vigência 2025 (referência genérica)", ""))
     st.markdown(f"**{vigencia}**" + (f" — Fonte oficial: [{link}]({link})" if link else ""))
     st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
+
+    selected_country = st.selectbox("País", country_names, index=0, key="page5_country_select")
+    country_cfg = find_country_by_label(selected_country) or DEFAULT_COUNTRY
+    st.session_state["page5_country_code"] = country_cfg.code
 
     st.markdown("#### " + translations.get("section_contributions_employee", "Contribuições do empregado"))
     st.markdown(

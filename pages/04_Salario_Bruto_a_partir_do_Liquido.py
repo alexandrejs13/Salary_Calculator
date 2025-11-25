@@ -35,6 +35,8 @@ def main():
     st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
     st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
 
+    st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
+
     selected_country = st.selectbox(
         translations.get("country_label", "País"),
         country_names,
@@ -43,8 +45,6 @@ def main():
     )
     country_cfg = find_country_by_label(selected_country) or DEFAULT_COUNTRY
     st.session_state["page4_country_code"] = country_cfg.code
-
-    st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
 
     target_net = st.number_input(
         t(translations, "salary_net_target"),
