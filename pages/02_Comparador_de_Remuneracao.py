@@ -1,120 +1,79 @@
 import streamlit as st
 
 from engines.calculator import calculate_compensation
-from engines.countries import COUNTRIES, DEFAULT_COUNTRY, find_country_by_label
+from engines.countries import COUNTRIES, DEFAULT_COUNTRY
 from engines.forms import render_country_form
 from engines.i18n import t
-from engines.tables_renderer import render_three_column_table
-from engines.tables_renderer_comparador import render_comparative_table
 from engines.ui import init_page, render_title_with_flag
+
+
+# Conversão simplificada (fator para moeda base fixa)
+CURRENCY_RATE = {
+    "br": 1.0,
+    "cl": 1.0,
+    "ar": 1.0,
+    "co": 1.0,
+    "mx": 1.0,
+    "us": 5.0,
+    "ca": 4.5,
+}
+
+
+def convert_amount(amount: float, code_from: str, code_to: str) -> float:
+    rate_from = CURRENCY_RATE.get(code_from, 1.0)
+    rate_to = CURRENCY_RATE.get(code_to, 1.0)
+    if rate_to == 0:
+        return amount
+    return amount * (rate_from / rate_to)
 
 
 def main():
     translations = init_page("page_02_title")
-    country_names = [cfg.label for cfg in COUNTRIES.values()]
-    selected_country = st.selectbox(
-        translations.get("country_label", "País"),
-        country_names,
-        index=0,
-        key="page2_country_select",
-        help=t(translations, "country_select_placeholder"),
-    )
-    country_cfg = find_country_by_label(selected_country) or DEFAULT_COUNTRY
+    current_origin = st.session_state.get("page2_origin_code", "br")
+    current_dest = st.session_state.get("page2_dest_code", "us")
 
-    render_title_with_flag(translations, country_cfg)
+    st.markdown("## Comparador de Remuneração")
+    render_title_with_flag(translations, COUNTRIES.get(current_origin, DEFAULT_COUNTRY))
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
-    st.markdown("<div class='app-container'>", unsafe_allow_html=True)
-    col_a, col_b = st.columns(2)
-    with col_a:
-        st.markdown(f"#### {translations.get('scenario_a', 'Cenário A')}")
-        values_a = render_country_form(country_cfg.code, translations, prefix="A")
-    with col_b:
-        st.markdown(f"#### {translations.get('scenario_b', 'Cenário B')}")
-        values_b = render_country_form(country_cfg.code, translations, prefix="B")
-    st.markdown("</div>", unsafe_allow_html=True)
+    tab_origem, tab_destino = st.tabs(["País de origem", "País de destino"])
 
-    if st.button(t(translations, "calculate_ab_button")):
-        res_a = calculate_compensation(country_cfg.code, values_a)
-        res_b = calculate_compensation(country_cfg.code, values_b)
+    with tab_origem:
+        values_origin = render_country_form(current_origin, translations, prefix="origin", allow_country_select=True)
+        st.session_state["page2_origin_code"] = values_origin.get("country_code", current_origin)
 
-        st.markdown("### Resultados individuais")
-        block1, block2 = st.columns(2)
-        with block1:
-            st.markdown(f"**{translations.get('scenario_a', 'Cenário A')}**")
-            render_three_column_table(
-                translations.get("tab_monthly", "Remuneração Mensal"),
-                res_a.monthly_rows,
-                translations.get("final_monthly", "REMUNERAÇÃO MENSAL LÍQUIDA"),
-                res_a.currency,
-                {
-                    "description": translations.get("table_description", "Descrição"),
-                    "percent": translations.get("table_percent", "%"),
-                    "value": translations.get("table_value", "Valor"),
-                },
-            )
-            render_three_column_table(
-                translations.get("tab_annual", "Remuneração Anual"),
-                res_a.annual_rows,
-                translations.get("final_annual", "REMUNERAÇÃO ANUAL LÍQUIDA"),
-                res_a.currency,
-                {
-                    "description": translations.get("table_description", "Descrição"),
-                    "percent": translations.get("table_percent", "%"),
-                    "value": translations.get("table_value", "Valor"),
-                },
-            )
-            render_three_column_table(
-                translations.get("tab_composition", "Composição"),
-                res_a.composition_rows,
-                translations.get("final_total_comp", "TOTAL REMUNERAÇÃO ANUAL"),
-                res_a.currency,
-                {
-                    "description": translations.get("table_description", "Descrição"),
-                    "percent": translations.get("table_percent", "%"),
-                    "value": translations.get("table_value", "Valor"),
-                },
-            )
-        with block2:
-            st.markdown(f"**{translations.get('scenario_b', 'Cenário B')}**")
-            render_three_column_table(
-                translations.get("tab_monthly", "Remuneração Mensal"),
-                res_b.monthly_rows,
-                translations.get("final_monthly", "REMUNERAÇÃO MENSAL LÍQUIDA"),
-                res_b.currency,
-                {
-                    "description": translations.get("table_description", "Descrição"),
-                    "percent": translations.get("table_percent", "%"),
-                    "value": translations.get("table_value", "Valor"),
-                },
-            )
-            render_three_column_table(
-                translations.get("tab_annual", "Remuneração Anual"),
-                res_b.annual_rows,
-                translations.get("final_annual", "REMUNERAÇÃO ANUAL LÍQUIDA"),
-                res_b.currency,
-                {
-                    "description": translations.get("table_description", "Descrição"),
-                    "percent": translations.get("table_percent", "%"),
-                    "value": translations.get("table_value", "Valor"),
-                },
-            )
-            render_three_column_table(
-                translations.get("tab_composition", "Composição"),
-                res_b.composition_rows,
-                translations.get("final_total_comp", "TOTAL REMUNERAÇÃO ANUAL"),
-                res_b.currency,
-                {
-                    "description": translations.get("table_description", "Descrição"),
-                    "percent": translations.get("table_percent", "%"),
-                    "value": translations.get("table_value", "Valor"),
-                },
-            )
+    with tab_destino:
+        values_dest = render_country_form(current_dest, translations, prefix="dest", allow_country_select=True)
+        st.session_state["page2_dest_code"] = values_dest.get("country_code", current_dest)
 
-        render_comparative_table(
-            translations.get("compare_table_title", "Comparativo de remuneração"),
-            res_a,
-            res_b,
-            translations,
+    st.markdown("<hr style='margin-top:6px;margin-bottom:24px'/>", unsafe_allow_html=True)
+
+    if st.button("Comparar Remuneração"):
+        origin_code = values_origin.get("country_code", current_origin)
+        dest_code = values_dest.get("country_code", current_dest)
+        res_origin = calculate_compensation(origin_code, values_origin)
+        res_dest = calculate_compensation(dest_code, values_dest)
+
+        # Converter valores do país de origem para a moeda do destino
+        origin_to_dest_monthly = convert_amount(res_origin.net_monthly, origin_code, dest_code)
+        origin_to_dest_annual = convert_amount(res_origin.net_annual, origin_code, dest_code)
+        origin_to_dest_total = convert_amount(res_origin.total_comp, origin_code, dest_code)
+
+        st.markdown("### Comparativo (valores convertidos para a moeda do destino)")
+        st.table(
+            {
+                "Descrição": ["Remuneração mensal líquida", "Remuneração anual líquida", "Remuneração anual total"],
+                "Origem (convertido)": [
+                    f"{res_dest.currency} {origin_to_dest_monthly:,.2f}",
+                    f"{res_dest.currency} {origin_to_dest_annual:,.2f}",
+                    f"{res_dest.currency} {origin_to_dest_total:,.2f}",
+                ],
+                "Destino": [
+                    f"{res_dest.currency} {res_dest.net_monthly:,.2f}",
+                    f"{res_dest.currency} {res_dest.net_annual:,.2f}",
+                    f"{res_dest.currency} {res_dest.total_comp:,.2f}",
+                ],
+            }
         )
 
 
