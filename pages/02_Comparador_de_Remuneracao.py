@@ -129,12 +129,6 @@ def main():
             st.markdown(f"### {title}")
             st.markdown("\n".join(html), unsafe_allow_html=True)
 
-        tab_m, tab_a = st.tabs(["Comparativo Mensal", "Comparativo Anual"])
-        with tab_m:
-            build_table("Mensal", monthly_rows)
-        with tab_a:
-            build_table("Anual", annual_rows)
-
         # Benefícios em espécie e depósitos (FGTS/AFP etc.)
         def benefits_map(res, code):
             items = {name: val for name, val in res.extras.get("benefits_monthly", [])}
@@ -147,11 +141,11 @@ def main():
         dest_ben = benefits_map(res_dest, dest_code)
         all_labels = sorted(set(origin_ben.keys()) | set(dest_ben.keys()))
 
-        def build_benefits_table(title, origin_vals, dest_vals):
+        def build_benefits_table(origin_vals, dest_vals):
             html = ["<table class='result-table'>"]
             html.append(
                 "<tr>"
-                f"<th class='text-left'>{title}</th>"
+                f"<th class='text-left'>Benefício/Depósito</th>"
                 f"<th class='text-right'>{origin_label}</th>"
                 f"<th class='text-right'>{dest_label}</th>"
                 "<th class='text-right'>Variação</th>"
@@ -210,10 +204,15 @@ def main():
         origin_ben_annual = {k: v * COUNTRIES.get(origin_code, DEFAULT_COUNTRY).annual_frequency for k, v in origin_ben_month.items()}
         dest_ben_annual = {k: v * COUNTRIES.get(dest_code, DEFAULT_COUNTRY).annual_frequency for k, v in dest_ben_month.items()}
 
-        st.markdown("### Benefícios e depósitos (mensal)")
-        build_benefits_table("Benefício/Depósito (mês)", origin_ben_month, dest_ben_month)
-        st.markdown("### Benefícios e depósitos (anual)")
-        build_benefits_table("Benefício/Depósito (ano)", origin_ben_annual, dest_ben_annual)
+        tab_m, tab_a = st.tabs(["Comparativo Mensal", "Comparativo Anual"])
+        with tab_m:
+            build_table("Mensal", monthly_rows)
+            st.markdown("### Benefícios e depósitos")
+            build_benefits_table(origin_ben_month, dest_ben_month)
+        with tab_a:
+            build_table("Anual", annual_rows)
+            st.markdown("### Benefícios e depósitos")
+            build_benefits_table(origin_ben_annual, dest_ben_annual)
 
 
 if __name__ == "__main__":
