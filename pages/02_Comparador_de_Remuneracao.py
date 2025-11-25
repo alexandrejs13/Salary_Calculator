@@ -116,8 +116,9 @@ def main():
                     var_txt = f"+ {var_txt}"
                 elif diff < 0:
                     var_txt = f"- {var_txt}"
+                row_class = "final-row" if ("Líquido" in desc or "Total" in desc) else ""
                 html.append(
-                    "<tr>"
+                    f"<tr class='{row_class}'>"
                     f"<td class='text-left'>{desc}</td>"
                     f"<td class='text-right'>{res_dest.currency} {o:,.2f}</td>"
                     f"<td class='text-right'>{res_dest.currency} {d:,.2f}</td>"
@@ -126,7 +127,7 @@ def main():
                     "</tr>"
                 )
             html.append("</table>")
-            st.markdown(f"### {title}")
+            st.markdown(f"### Remuneração {title}")
             st.markdown("\n".join(html), unsafe_allow_html=True)
 
         # Benefícios em espécie e depósitos (FGTS/AFP etc.)
