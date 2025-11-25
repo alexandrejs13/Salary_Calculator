@@ -171,6 +171,7 @@ def calculate_compensation(country_code: str, inputs: Dict) -> CalculationResult
     cfg = COUNTRIES.get(country_code, COUNTRIES["br"])
     base_salary = float(inputs.get("base_salary") or 0)
     other_additions = float(inputs.get("other_additions") or 0)
+    in_kind_benefits = float(inputs.get("in_kind_benefits") or 0)
     bonus_percent = float(inputs.get("bonus_percent") or 0)
 
     monthly_gross = base_salary + other_additions
@@ -249,6 +250,10 @@ def calculate_compensation(country_code: str, inputs: Dict) -> CalculationResult
         rrsp_m = float(inputs.get("pension_employee") or 0)
         benefits_monthly.append(("RRSP / Group RRSP (empregado)", rrsp_m))
         benefits_annual.append(("RRSP / Group RRSP (empregado)", rrsp_m * cfg.annual_frequency))
+
+    if in_kind_benefits:
+        benefits_monthly.append(("Benefícios em espécie", in_kind_benefits))
+        benefits_annual.append(("Benefícios em espécie", in_kind_benefits * cfg.annual_frequency))
 
     extras = {
         "benefits_monthly": benefits_monthly,

@@ -106,7 +106,7 @@ def render_country_form(
             key=k("contract"),
         )
 
-    col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
+    col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
     values["base_salary"] = col1.number_input(
         t(translations, "base_salary_label"),
         min_value=0.0,
@@ -132,6 +132,16 @@ def render_country_form(
         step=50.0,
         key=k("additions"),
         help=t(translations, "help_other_additions"),
+    )
+    values["in_kind_benefits"] = col5.number_input(
+        translations.get("in_kind_benefits_label", "Benefícios em espécie"),
+        min_value=0.0,
+        step=50.0,
+        key=k("in_kind"),
+        help=translations.get(
+            "help_in_kind_benefits",
+            "Adicione benefícios em espécie que não incidem no salário (vale refeição, alimentação, etc.).",
+        ),
     )
 
     if current_code in ("cl", "us"):
