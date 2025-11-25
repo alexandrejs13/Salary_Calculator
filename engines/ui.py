@@ -8,6 +8,7 @@ from .countries import CountryConfig
 from .i18n import load_translations
 
 CSS_PATH = Path(__file__).resolve().parent.parent / "assets" / "css" / "layout_global.css"
+LANGUAGES = {"Português": "pt", "English": "en", "Español": "es"}
 EMOJI_BY_PAGE = {
     "app.py": "🧮",
     "pages/02_Comparador_de_Remuneracao.py": "⚖️",
@@ -34,7 +35,8 @@ def init_page(page_title_key: str) -> Dict[str, str]:
     """Prepare Streamlit page with CSS and custom sidebar."""
     if "lang" not in st.session_state:
         st.session_state["lang"] = "pt"
-    lang = st.session_state["lang"]
+    lang = _get_selected_lang_from_state(st.session_state["lang"])
+    st.session_state["lang"] = lang
     translations = load_translations(lang)
     st.set_page_config(
         page_title=translations.get(page_title_key, "Simulador de Remuneração"),
@@ -53,12 +55,16 @@ def _inject_css() -> None:
 
 
 def _render_sidebar(translations: Dict[str, str], current_lang: str) -> None:
-    languages = {"Português": "pt", "English": "en", "Español": "es"}
-    display_langs = list(languages.keys())
-    current_display = [k for k, v in languages.items() if v == current_lang]
+    display_langs = list(LANGUAGES.keys())
+    current_display = [k for k, v in LANGUAGES.items() if v == current_lang]
     index = display_langs.index(current_display[0]) if current_display else 0
-    choice = st.sidebar.selectbox(translations.get("language_label", "Idioma"), display_langs, index=index)
-    st.session_state["lang"] = languages.get(choice, "pt")
+    choice = st.sidebar.selectbox(
+        translations.get("language_label", "Idioma"),
+        display_langs,
+        index=index,
+        key="sidebar_language",
+    )
+    st.session_state["lang"] = LANGUAGES.get(choice, "pt")
 
     st.sidebar.markdown("---")
     st.sidebar.markdown("### Menu")
@@ -84,3 +90,11 @@ def render_title_with_flag(translations: Dict[str, str], country_cfg: Optional[C
         "</div>",
         unsafe_allow_html=True,
     )
+
+
+def _get_selected_lang_from_state(default_lang: str) -> str:
+    """Read the selected language from widget state before rendering translations."""
+    selected_label = st.session_state.get("sidebar_language")
+    if selected_label:
+        return LANGUAGES.get(selected_label, default_lang)
+    return st.session_state.get("lang", default_lang)
