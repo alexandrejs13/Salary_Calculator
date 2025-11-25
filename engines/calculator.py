@@ -152,10 +152,9 @@ def compute_country_taxes(code: str, gross_monthly: float, bonus_value: float, i
         income_tax = gross_monthly * 0.12
         employer_cost = gross_monthly * 0.10
 
-    social_security += pension_employee
     employer_cost += pension_employer
     income_tax += addl_withholding
-    other_deds = other_discounts + alimony
+    other_deds = other_discounts + alimony + pension_employee
 
     return {
         "social_security": social_security,
