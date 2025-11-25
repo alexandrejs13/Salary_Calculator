@@ -131,13 +131,15 @@ def main():
         vacation = monthly_base if country_cfg.code in ["br", "cl", "ar", "co", "mx"] else 0.0
         vacation_third = monthly_base / 3 if country_cfg.code == "br" else 0.0
         annual_salary = monthly_base * 12
-        base_components = [
-            ("Salário base (12x)", base_salary * 12, None) if base_salary else (None, 0, None),
+        remuneration_rows = [
+            ("Salário base", base_salary * 12, None) if base_salary else (None, 0, None),
             ("Outros adicionais (12x)", additions * 12, None) if additions else (None, 0, None),
             ("13º salário" if thirteenth else None, thirteenth, None),
             ("Férias", vacation, None) if vacation else (None, 0, None),
             ("1/3 férias", vacation_third, None) if vacation_third else (None, 0, None),
             ("Bônus", bonus_value, None) if bonus_value else (None, 0, None),
+        ]
+        benefits_rows = [
             ("Benefícios em espécie", in_kind_benefits * freq, None) if in_kind_benefits else (None, 0, None),
             ("Previdência privada (empregador)", pension_employer * freq, None) if pension_employer else (None, 0, None),
         ]
@@ -150,22 +152,30 @@ def main():
             employer_rows.append((item, rate * 100, annual_value))
 
         all_rows = []
-        for label, val, rate in base_components:
+        for label, val, rate in remuneration_rows:
             if label and val:
-                all_rows.append((label, rate, val))
-        all_rows.extend(employer_rows)
-        total_cost = sum(val for _, _, val in all_rows)
+                all_rows.append((label, rate, val, "rem"))
+        for label, val, rate in benefits_rows:
+            if label and val:
+                all_rows.append((label, rate, val, "benefit"))
+        for label, rate_pct, val in employer_rows:
+            all_rows.append((label, rate_pct, val, "charge"))
+
+        rem_total = sum(val for _, _, val, cat in all_rows if cat == "rem")
+        ben_total = sum(val for _, _, val, cat in all_rows if cat == "benefit")
+        charge_total = sum(val for _, _, val, cat in all_rows if cat == "charge")
+        total_cost = rem_total + ben_total + charge_total
         st.markdown("### " + translations.get("section_employer_cost", "Custo do empregador"))
         table_html = ["<table class='result-table'>"]
         table_html.append(
             "<tr>"
-            "<th class='text-left'>Item</th>"
+            "<th class='text-left'>Descrição</th>"
             "<th class='text-center'>% empregador</th>"
             "<th class='text-right'>Valor mensal (12)</th>"
             "<th class='text-right'>Valor anual</th>"
             "</tr>"
         )
-        for label, rate, annual_value in all_rows:
+        for label, rate, annual_value, cat in all_rows:
             monthly_value = annual_value / 12
             rate_txt = f"{rate:.2f}%" if rate else "—"
             table_html.append(
@@ -178,13 +188,69 @@ def main():
             )
         table_html.append(
             f"<tr class='final-row'>"
+            f"<td class='text-left'>Subtotal Remuneração</td><td></td>"
+            f"<td class='text-right'>{currency} {(rem_total/12):,.2f}</td>"
+            f"<td class='text-right'>{currency} {rem_total:,.2f}</td>"
+            f"</tr>"
+        )
+        table_html.append(
+            f"<tr class='final-row'>"
+            f"<td class='text-left'>Subtotal Benefícios</td><td></td>"
+            f"<td class='text-right'>{currency} {(ben_total/12):,.2f}</td>"
+            f"<td class='text-right'>{currency} {ben_total:,.2f}</td>"
+            f"</tr>"
+        )
+        table_html.append(
+            f"<tr class='final-row'>"
+            f"<td class='text-left'>Subtotal Encargos</td><td></td>"
+            f"<td class='text-right'>{currency} {(charge_total/12):,.2f}</td>"
+            f"<td class='text-right'>{currency} {charge_total:,.2f}</td>"
+            f"</tr>"
+        )
+        table_html.append(
+            f"<tr class='final-row'>"
             f"<td class='text-left'>Total</td><td></td>"
             f"<td class='text-right'>{currency} {(total_cost/12):,.2f}</td>"
-        f"<td class='text-right'>{currency} {total_cost:,.2f}</td>"
-        f"</tr>"
+            f"<td class='text-right'>{currency} {total_cost:,.2f}</td>"
+            f"</tr>"
         )
         table_html.append("</table>")
         st.markdown("\n".join(table_html), unsafe_allow_html=True)
+
+        # Tabela de incidências
+        st.markdown("#### Incidências dos encargos sobre componentes")
+        inc_headers = ["Encargo", "Salário", "13º", "Férias", "Bônus", "Benefícios esp.", "Prev. empregador"]
+        inc_cols = ["salary", "thirteenth", "vacation", "bonus", "in_kind", "pension"]
+        inc_matrix = []
+        for item, rate in EMPLOYER_ITEMS.get(country_cfg.code, []):
+            inc_matrix.append((item, True, bool(thirteenth), bool(vacation), include_bonus_in_charges, False, False))
+        symbol = lambda v: "✔" if v else "✖"
+        inc_html = ["<table class='result-table'>"]
+        inc_html.append(
+            "<tr>"
+            + "".join(
+                [
+                    f"<th class='text-center'>{h}</th>" if i else f"<th class='text-left'>{h}</th>"
+                    for i, h in enumerate(inc_headers)
+                ]
+            )
+            + "</tr>"
+        )
+        for row in inc_matrix:
+            name, sal, thir, vac, bon, ink, pen = row
+            inc_html.append(
+                "<tr>"
+                f"<td class='text-left'>{name}</td>"
+                f"<td class='text-center'>{symbol(sal)}</td>"
+                f"<td class='text-center'>{symbol(thir)}</td>"
+                f"<td class='text-center'>{symbol(vac)}</td>"
+                f"<td class='text-center'>{symbol(bon)}</td>"
+                f"<td class='text-center'>{symbol(ink)}</td>"
+                f"<td class='text-center'>{symbol(pen)}</td>"
+                "</tr>"
+            )
+        inc_html.append("</table>")
+        st.markdown("\n".join(inc_html), unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
