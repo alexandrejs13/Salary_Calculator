@@ -41,13 +41,6 @@ def main():
         "</div>",
         unsafe_allow_html=True,
     )
-    st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
-    st.markdown(
-        "<div style='font-size:16px; font-weight:600;'>Região Américas</div>"
-        "<div style='font-size:12px; color:#666;'>Calcule salários, bônus e descontos por país</div>"
-        "<div style='font-size:12px; color:#666;'>Atualize origem e destino para comparar pacotes</div>",
-        unsafe_allow_html=True,
-    )
     st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
     st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
     st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
