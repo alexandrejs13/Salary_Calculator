@@ -123,11 +123,29 @@ def main():
             f"<tr class='final-row'>"
             f"<td class='text-left'>Total</td><td></td>"
             f"<td class='text-right'>{currency} {total_comp:,.2f}</td>"
-            f"<td class='text-right'>{currency} {(total_comp/12):,.2f}</td>"
-            f"</tr>"
+        f"<td class='text-right'>{currency} {(total_comp/12):,.2f}</td>"
+        f"</tr>"
         )
         table_html.append("</table>")
         st.markdown("\n".join(table_html), unsafe_allow_html=True)
+        factor = country_cfg.annual_frequency
+        linear_12 = total_comp * (12 / factor) if factor else total_comp
+        st.markdown(
+            f"**Fator anual do país:** {factor:.2f} meses. "
+            f"Total anual utilizado: {currency} {total_comp:,.2f}. "
+            f"Em 12 meses lineares, seria aproximadamente {currency} {linear_12:,.2f}."
+        )
+        if EMPLOYER_ITEMS.get(country_cfg.code):
+            st.markdown("#### Incidência resumida")
+            incidence_rows = []
+            for item, rate in EMPLOYER_ITEMS.get(country_cfg.code, []):
+                incidence_rows.append(
+                    f"<tr><td class='text-left'>{item}</td><td class='text-center'>{rate*100:.2f}%</td></tr>"
+                )
+            inc_html = ["<table class='result-table'>", "<tr><th class='text-left'>Encargo</th><th class='text-center'>%</th></tr>"]
+            inc_html.extend(incidence_rows)
+            inc_html.append("</table>")
+            st.markdown("\n".join(inc_html), unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
