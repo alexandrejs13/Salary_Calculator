@@ -157,6 +157,7 @@ h3 {
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid #E0E0E0;
+    table-layout: fixed;
 }
 
 .result-table th, .result-table td {

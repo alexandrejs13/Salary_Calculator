@@ -99,7 +99,7 @@ def main():
             html = ["<table class='result-table'>"]
             html.append(
                 "<tr>"
-                f"<th class='text-left'>Descrição</th>"
+                f"<th class='text-left' style='width:30%'>Descrição</th>"
                 f"<th class='text-right'>{origin_label}</th>"
                 f"<th class='text-right'>{dest_label}</th>"
                 "<th class='text-right'>Variação</th>"
@@ -119,7 +119,7 @@ def main():
                 row_class = "final-row" if ("Líquido" in desc or "Total" in desc) else ""
                 html.append(
                     f"<tr class='{row_class}'>"
-                    f"<td class='text-left'>{desc}</td>"
+                    f"<td class='text-left' style='width:30%'>{desc}</td>"
                     f"<td class='text-right'>{res_dest.currency} {o:,.2f}</td>"
                     f"<td class='text-right'>{res_dest.currency} {d:,.2f}</td>"
                     f"<td class='text-right {cls}'>{var_txt}</td>"
@@ -146,7 +146,7 @@ def main():
             html = ["<table class='result-table'>"]
             html.append(
                 "<tr>"
-                f"<th class='text-left'>Benefício/Depósito</th>"
+                f"<th class='text-left' style='width:30%'>Benefício/Depósito</th>"
                 f"<th class='text-right'>{origin_label}</th>"
                 f"<th class='text-right'>{dest_label}</th>"
                 "<th class='text-right'>Variação</th>"
@@ -172,7 +172,7 @@ def main():
                     var_txt = f"- {var_txt}"
                 html.append(
                     "<tr>"
-                    f"<td class='text-left'>{label}</td>"
+                    f"<td class='text-left' style='width:30%'>{label}</td>"
                     f"<td class='text-right'>{res_dest.currency} {o_conv:,.2f}</td>"
                     f"<td class='text-right'>{res_dest.currency} {d_val:,.2f}</td>"
                     f"<td class='text-right {cls}'>{var_txt}</td>"
@@ -208,10 +208,12 @@ def main():
         tab_m, tab_a = st.tabs(["Comparativo Mensal", "Comparativo Anual"])
         with tab_m:
             build_table("Mensal", monthly_rows)
+            st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
             st.markdown("### Benefícios e depósitos")
             build_benefits_table(origin_ben_month, dest_ben_month)
         with tab_a:
             build_table("Anual", annual_rows)
+            st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
             st.markdown("### Benefícios e depósitos")
             build_benefits_table(origin_ben_annual, dest_ben_annual)
 
