@@ -43,14 +43,24 @@ def main():
     )
     st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
     st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
-    st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
+
+    flag_origin = {"br": "🇧🇷", "cl": "🇨🇱", "ar": "🇦🇷", "co": "🇨🇴", "mx": "🇲🇽", "us": "🇺🇸", "ca": "🇨🇦"}.get(current_origin, "")
+    st.markdown(
+        f"<div style='display:flex; justify-content:flex-end; gap:12px; align-items:center; font-size:26px;'>"
+        f"<span>{flag_origin}</span><span>{flag_emoji}</span>"
+        "</div>",
+        unsafe_allow_html=True,
+    )
+
     tab_origem, tab_destino = st.tabs(["País de origem", "País de destino"])
 
     with tab_origem:
+        st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
         values_origin = render_country_form(current_origin, translations, prefix="origin", allow_country_select=True)
         st.session_state["page2_origin_code"] = values_origin.get("country_code", current_origin)
 
     with tab_destino:
+        st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
         values_dest = render_country_form(current_dest, translations, prefix="dest", allow_country_select=True)
         st.session_state["page2_dest_code"] = values_dest.get("country_code", current_dest)
 
@@ -62,27 +72,30 @@ def main():
         res_origin = calculate_compensation(origin_code, values_origin)
         res_dest = calculate_compensation(dest_code, values_dest)
 
-        # Converter valores do país de origem para a moeda do destino
+        # Converter valores do país de origem para a moeda do destino (se diferente)
         origin_to_dest_monthly = convert_amount(res_origin.net_monthly, origin_code, dest_code)
         origin_to_dest_annual = convert_amount(res_origin.net_annual, origin_code, dest_code)
         origin_to_dest_total = convert_amount(res_origin.total_comp, origin_code, dest_code)
 
-        st.markdown("### Comparativo (valores convertidos para a moeda do destino)")
-        st.table(
-            {
-                "Descrição": ["Remuneração mensal líquida", "Remuneração anual líquida", "Remuneração anual total"],
-                "Origem (convertido)": [
-                    f"{res_dest.currency} {origin_to_dest_monthly:,.2f}",
-                    f"{res_dest.currency} {origin_to_dest_annual:,.2f}",
-                    f"{res_dest.currency} {origin_to_dest_total:,.2f}",
-                ],
-                "Destino": [
-                    f"{res_dest.currency} {res_dest.net_monthly:,.2f}",
-                    f"{res_dest.currency} {res_dest.net_annual:,.2f}",
-                    f"{res_dest.currency} {res_dest.total_comp:,.2f}",
-                ],
-            }
-        )
+        rows = [
+            ("Remuneração mensal líquida", origin_to_dest_monthly, res_dest.net_monthly),
+            ("Remuneração anual líquida", origin_to_dest_annual, res_dest.net_annual),
+            ("Remuneração anual total", origin_to_dest_total, res_dest.total_comp),
+        ]
+        table_html = ["<table class='result-table'>"]
+        table_html.append("<tr><th>Descrição</th><th>Origem</th><th>Destino</th></tr>")
+        for desc, o, d in rows:
+            table_html.append(
+                "<tr>"
+                f"<td>{desc}</td>"
+                f"<td style='text-align:right'>{res_dest.currency} {o:,.2f}</td>"
+                f"<td style='text-align:right'>{res_dest.currency} {d:,.2f}</td>"
+                "</tr>"
+            )
+        table_html.append("</table>")
+
+        st.markdown("### Comparativo")
+        st.markdown("\n".join(table_html), unsafe_allow_html=True)
 
 
 if __name__ == "__main__":

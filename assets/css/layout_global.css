@@ -80,6 +80,12 @@ select,
     display: flex;
     align-items: center;
 }
+.stSelectbox div[data-baseweb="select"] > div {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 10px;
+}
 
 .stSelectbox div[data-baseweb="select"] > div {
     display: flex;
