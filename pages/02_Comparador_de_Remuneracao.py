@@ -85,25 +85,19 @@ def main():
         dest_base = float(values_dest.get("base_salary") or 0)
         origin_add = convert_amount(float(values_origin.get("other_additions") or 0), origin_code, dest_code)
         dest_add = float(values_dest.get("other_additions") or 0)
-        origin_in_kind = convert_amount(float(values_origin.get("in_kind_benefits") or 0), origin_code, dest_code)
-        dest_in_kind = float(values_dest.get("in_kind_benefits") or 0)
-        origin_bonus_month = convert_amount(res_origin.bonus_value / COUNTRIES.get(origin_code, DEFAULT_COUNTRY).annual_frequency, origin_code, dest_code)
-        dest_bonus_month = res_dest.bonus_value / COUNTRIES.get(dest_code, DEFAULT_COUNTRY).annual_frequency
         origin_bonus_annual = convert_amount(res_origin.bonus_value, origin_code, dest_code)
         dest_bonus_annual = res_dest.bonus_value
+        dest_freq = COUNTRIES.get(dest_code, DEFAULT_COUNTRY).annual_frequency
 
         monthly_rows = [
             ("Salário Base", origin_base, dest_base),
             ("Outros Adicionais", origin_add, dest_add),
-            ("Benefícios em espécie", origin_in_kind, dest_in_kind),
-            ("Bônus (mensal equiv.)", origin_bonus_month, dest_bonus_month),
             ("Impostos/Descontos (mensal)", origin_tax_m_conv, dest_tax_m),
             ("Líquido mensal", origin_to_dest_monthly, res_dest.net_monthly),
         ]
         annual_rows = [
             ("Salário Anual", origin_to_dest_gross_a, res_dest.annual_gross),
-            ("Outros Adicionais (anual)", origin_add * COUNTRIES.get(dest_code, DEFAULT_COUNTRY).annual_frequency, dest_add * COUNTRIES.get(dest_code, DEFAULT_COUNTRY).annual_frequency),
-            ("Benefícios em espécie (anual)", origin_in_kind * COUNTRIES.get(dest_code, DEFAULT_COUNTRY).annual_frequency, dest_in_kind * COUNTRIES.get(dest_code, DEFAULT_COUNTRY).annual_frequency),
+            ("Outros Adicionais (anual)", origin_add * dest_freq, dest_add * dest_freq),
             ("Bônus Anual", origin_bonus_annual, dest_bonus_annual),
             ("Impostos/Descontos (anual)", origin_tax_a_conv, dest_tax_a),
             ("Líquido anual", origin_to_dest_annual, res_dest.net_annual),

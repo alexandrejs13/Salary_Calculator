@@ -53,9 +53,25 @@ def render_extra_info(extras: Dict, translations: Dict[str, str], currency: str,
     benefits = extras.get("benefits_monthly" if mode == "monthly" else "benefits_annual", [])
     pension = extras.get("pension_employer_monthly" if mode == "monthly" else "pension_employer_annual", 0)
 
-    if benefits or pension:
-        st.markdown("<br/>", unsafe_allow_html=True)
-    for label, value in benefits:
-        st.markdown(f"- {label}: {format_currency(value, currency)}")
+    rows = list(benefits)
     if pension:
-        st.markdown(f"- Previdência Privada Empregador: {format_currency(pension, currency)}")
+        rows.append(("Previdência Privada Empregador", pension))
+    if not rows:
+        return
+
+    html = ["<table class='result-table'>"]
+    html.append(
+        "<tr>"
+        f"<th class='text-left'>{translations.get('table_description', 'Descrição')}</th>"
+        f"<th class='text-right'>{translations.get('table_value', 'Valor')}</th>"
+        "</tr>"
+    )
+    for label, value in rows:
+        html.append(
+            "<tr>"
+            f"<td class='text-left'>{label}</td>"
+            f"<td class='text-right'>{format_currency(value, currency)}</td>"
+            "</tr>"
+        )
+    html.append("</table>")
+    st.markdown("\n".join(html), unsafe_allow_html=True)
