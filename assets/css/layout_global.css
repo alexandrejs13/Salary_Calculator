@@ -50,6 +50,17 @@ body, html {
     flex-direction: column;
 }
 
+/* Inputs */
+input, textarea, select {
+    background: #d3e6e9 !important;
+    border: 1px solid #9cb8bd !important;
+}
+
+.stSelectbox, .stNumberInput, .stTextInput {
+    background: #d3e6e9 !important;
+    border: 1px solid #9cb8bd !important;
+}
+
 /* Title + flag */
 .title-row {
     display: flex;
@@ -142,8 +153,8 @@ body, html {
 
 /* Sidebar */
 [data-testid="stSidebar"] {
-    background: #F1F3F5;
-    border-right: 1px solid #E0E0E0;
+    background: #d3e6e9;
+    border-right: 1px solid #9cb8bd;
     resize: none !important;
     min-width: 280px;
     max-width: 320px;
