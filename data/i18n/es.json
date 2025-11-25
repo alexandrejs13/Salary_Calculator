@@ -16,6 +16,8 @@
   "bonus_percent_label": "% del Bono Anual",
   "bonus_value_label": "Valor Calculado",
   "bonus_incidence_label": "Incidencias del Bono",
+  "parameters_title": "Parámetros de cálculo de la remuneración",
+  "benefits_title": "Beneficios y depósitos",
   "private_pension_type_label": "Tipo de Pensión",
   "private_pension_employer_label": "Contribución Empleador",
   "private_pension_employee_label": "Contribución Empleado",

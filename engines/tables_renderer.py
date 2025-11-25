@@ -64,7 +64,10 @@ def render_extra_info(extras: Dict, translations: Dict[str, str], currency: str,
         return
 
     st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
-    st.markdown("<div class='table-title'>Benefícios e depósitos</div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div class='table-title'>{translations.get('benefits_title', 'Benefícios e depósitos')}</div>",
+        unsafe_allow_html=True,
+    )
     html = ["<table class='result-table'>"]
     html.append(
         "<tr>"

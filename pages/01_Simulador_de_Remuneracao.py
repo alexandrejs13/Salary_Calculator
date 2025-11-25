@@ -14,6 +14,13 @@ def main():
     country_cfg = COUNTRIES.get(current_code, DEFAULT_COUNTRY)
     render_title_with_flag(translations, country_cfg)
 
+    st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+    st.markdown(
+        f"<div class='title-card'>{translations.get('parameters_title', 'Parâmetros de cálculo da remuneração')}</div>",
+        unsafe_allow_html=True,
+    )
+
     values = render_country_form(country_cfg.code, translations, allow_country_select=True)
     st.session_state["page1_country_code"] = values.get("country_code", current_code)
 
