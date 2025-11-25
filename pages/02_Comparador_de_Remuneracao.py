@@ -35,32 +35,30 @@ def main():
     dest_flag = COUNTRIES.get(current_dest, DEFAULT_COUNTRY).code
     flag_emoji = {"br": "🇧🇷", "cl": "🇨🇱", "ar": "🇦🇷", "co": "🇨🇴", "mx": "🇲🇽", "us": "🇺🇸", "ca": "🇨🇦"}.get(dest_flag, "")
     st.markdown(
-        "<div class='title-card'>"
         "<div class='title-row'>"
         f"<h1>Comparador de Remuneração</h1>"
         f"<span class='title-flag'>{flag_emoji}</span>"
-        "</div>"
-        "<div style='font-size:16px; font-weight:600;'>Região Américas</div>"
-        "<div style='font-size:12px; color:#666;'>Calcule salários, bônus e descontos por país</div>"
-        "<div style='font-size:12px; color:#666;'>Atualize origem e destino para comparar pacotes</div>"
         "</div>",
         unsafe_allow_html=True,
     )
+    st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
+    st.markdown(
+        "<div style='font-size:16px; font-weight:600;'>Região Américas</div>"
+        "<div style='font-size:12px; color:#666;'>Calcule salários, bônus e descontos por país</div>"
+        "<div style='font-size:12px; color:#666;'>Atualize origem e destino para comparar pacotes</div>",
+        unsafe_allow_html=True,
+    )
     st.markdown("<div style='height:6px; border-top: 3px solid #0F4F59;'></div>", unsafe_allow_html=True)
-    st.markdown("#### Parâmetros de cálculo da remuneração", unsafe_allow_html=True)
+    st.markdown("<div class='title-card'>Parâmetros de cálculo da remuneração</div>", unsafe_allow_html=True)
+    tab_origem, tab_destino = st.tabs(["País de origem", "País de destino"])
 
-    with st.container():
-        st.markdown("<div class='form-shell'>", unsafe_allow_html=True)
-        tab_origem, tab_destino = st.tabs(["País de origem", "País de destino"])
+    with tab_origem:
+        values_origin = render_country_form(current_origin, translations, prefix="origin", allow_country_select=True)
+        st.session_state["page2_origin_code"] = values_origin.get("country_code", current_origin)
 
-        with tab_origem:
-            values_origin = render_country_form(current_origin, translations, prefix="origin", allow_country_select=True)
-            st.session_state["page2_origin_code"] = values_origin.get("country_code", current_origin)
-
-        with tab_destino:
-            values_dest = render_country_form(current_dest, translations, prefix="dest", allow_country_select=True)
-            st.session_state["page2_dest_code"] = values_dest.get("country_code", current_dest)
-        st.markdown("</div>", unsafe_allow_html=True)
+    with tab_destino:
+        values_dest = render_country_form(current_dest, translations, prefix="dest", allow_country_select=True)
+        st.session_state["page2_dest_code"] = values_dest.get("country_code", current_dest)
 
     st.markdown("<hr style='margin-top:6px;margin-bottom:20px'/>", unsafe_allow_html=True)
 
