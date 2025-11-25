@@ -6,15 +6,15 @@ from engines.ui import init_page
 
 COST_DATA = {
     "Brasil": {
-        "total": 0.315,
+        "total": 0.325,
         "items": [("FGTS", 0.08), ("INSS Patronal", 0.20), ("Sistema S", 0.025), ("RAT", 0.02)],
     },
     "Estados Unidos": {
-        "total": 0.153,
+        "total": 0.0865,
         "items": [("FICA (Employer)", 0.062), ("Medicare (Employer)", 0.0145), ("FUTA/SUTA", 0.01)],
     },
     "Canadá": {
-        "total": 0.1607,
+        "total": 0.0816,
         "items": [("CPP (Employer)", 0.0595), ("EI (Employer)", 0.0221)],
     },
     "México": {"total": 0.22, "items": [("IMSS + SAR + INFONAVIT", 0.22)]},
@@ -64,11 +64,19 @@ def main():
     country_names = [cfg.label for cfg in COUNTRIES.values()]
     selection = st.multiselect(
         translations.get("multi_country_label", "Países para comparação"),
-        country_names,
-        default=country_names[:3],
+        sorted(country_names),
+        default=sorted(country_names)[:3],
     )
 
-    st.markdown(build_table(selection), unsafe_allow_html=True)
+    ordered = sorted(selection)
+    st.markdown(build_table(ordered), unsafe_allow_html=True)
+    if ordered:
+        totals = [COST_DATA[c]["total"] * 100 for c in ordered if c in COST_DATA]
+        st.bar_chart(
+            data={"País": ordered, "Encargos (%)": totals},
+            x="País",
+            y="Encargos (%)",
+        )
 
     if selection:
         sorted_selection = sorted(selection, key=lambda c: COST_DATA.get(c, {}).get("total", 0))

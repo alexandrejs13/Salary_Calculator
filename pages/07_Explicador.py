@@ -61,16 +61,18 @@ def main():
         st.markdown(f"- Carga do empregado: {carga_empregado:.1f}%")
         st.markdown(f"- Carga do empregador (estimada): {carga_empregador:.1f}%")
 
+        perc_empregado = ((res.monthly_gross - res.net_monthly) / res.monthly_gross * 100) if res.monthly_gross else 0
+        perc_empregador = (res.extras.get("employer_cost_monthly", 0) / res.monthly_gross * 100) if res.monthly_gross else 0
         table = [
-            ("Salário bruto mensal", f"{currency} {res.monthly_gross:,.2f}"),
-            ("Impostos/Previdência (empregado)", f"{currency} {(res.monthly_gross - res.net_monthly):,.2f}"),
-            ("Líquido mensal", f"{currency} {res.net_monthly:,.2f}"),
-            ("Custo empregador (mensal)", f"{currency} {res.extras.get('employer_cost_monthly',0):,.2f}"),
+            ("Salário bruto mensal", f"{currency} {res.monthly_gross:,.2f}", "—"),
+            ("Impostos/Previdência (empregado)", f"{currency} {(res.monthly_gross - res.net_monthly):,.2f}", f"{perc_empregado:.1f}%"),
+            ("Líquido mensal", f"{currency} {res.net_monthly:,.2f}", "—"),
+            ("Custo empregador (mensal)", f"{currency} {res.extras.get('employer_cost_monthly',0):,.2f}", f"{perc_empregador:.1f}%"),
         ]
         html = ["<table class='result-table'>"]
-        html.append("<tr><th class='text-left'>Item</th><th class='text-right'>Valor</th></tr>")
-        for label, val in table:
-            html.append(f"<tr><td class='text-left'>{label}</td><td class='text-right'>{val}</td></tr>")
+        html.append("<tr><th class='text-left'>Item</th><th class='text-right'>Valor</th><th class='text-center'>%</th></tr>")
+        for label, val, perc in table:
+            html.append(f"<tr><td class='text-left'>{label}</td><td class='text-right'>{val}</td><td class='text-center'>{perc}</td></tr>")
         html.append("</table>")
         st.markdown("\n".join(html), unsafe_allow_html=True)
 
