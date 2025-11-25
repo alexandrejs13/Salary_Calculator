@@ -52,7 +52,6 @@ def render_country_form(
         except ValueError:
             parsed = stored if stored is not None else 0.0
         st.session_state[float_key] = parsed
-        st.session_state[text_key] = _fmt_br(parsed)
         return parsed
 
     # Primeira linha: país + campos variáveis por país (país na primeira coluna)
