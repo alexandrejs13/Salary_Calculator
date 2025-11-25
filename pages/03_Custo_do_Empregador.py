@@ -173,6 +173,7 @@ def main():
         ben_total = sum(val for _, _, val, cat, _ in all_rows if cat == "benefit")
         charge_total = sum(val for _, _, val, cat, _ in all_rows if cat == "charge")
         total_cost = rem_total + ben_total + charge_total
+        charge_base_pct = (charge_total / charge_base * 100) if charge_base else 0.0
         st.markdown("### " + translations.get("section_employer_cost", "Custo do empregador"))
         table_html = ["<table class='result-table'>"]
         table_html.append(
@@ -219,7 +220,8 @@ def main():
         table_html.append(
             f"<tr style='background:#f4f4f4'>"
             f"<td class='text-left'>Subtotal Encargos ({pct(charge_total):.1f}%)</td>"
-            f"<td></td><td class='text-center'></td>"
+            f"<td></td>"
+            f"<td class='text-center'>{charge_base_pct:.2f}%</td>"
             f"<td class='text-right'>{currency} {(charge_total/12):,.2f}</td>"
             f"<td class='text-right'>{currency} {charge_total:,.2f}</td>"
             f"</tr>"
