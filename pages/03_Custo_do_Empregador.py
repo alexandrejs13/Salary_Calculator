@@ -180,7 +180,7 @@ def main():
             "<tr>"
             "<th class='text-left' style='width:25%; white-space:nowrap'>Tipo</th>"
             "<th class='text-left' style='width:25%'>Descrição</th>"
-            "<th class='text-center' style='width:16.6%'>% Encargos</th>"
+            "<th class='text-center' style='width:16.6%; text-align:center'>% Encargos</th>"
             "<th class='text-right' style='width:16.6%; text-align:right'>Valor mensal</th>"
             "<th class='text-right' style='width:16.6%; text-align:right'>Valor anual</th>"
             "</tr>"
