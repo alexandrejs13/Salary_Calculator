@@ -230,7 +230,7 @@ def main():
             f"<tr style='background:#f4f4f4'>"
             f"<td class='text-left' style='width:25%; white-space:nowrap'>Subtotal Encargos ({pct(charge_total):.1f}%)</td>"
             f"<td style='width:25%'></td>"
-            f"<td class='text-center' style='width:16.6%'>{charge_pct_sum:.2f}%</td>"
+            f"<td class='text-center' style='width:16.6%'></td>"
             f"<td class='text-right' style='width:16.6%; text-align:right'>{currency} {(charge_total/12):,.2f}</td>"
             f"<td class='text-right' style='width:16.6%; text-align:right'>{currency} {charge_total:,.2f}</td>"
             f"</tr>"
@@ -259,8 +259,8 @@ def main():
             "<tr>"
             + "".join(
                 [
-                    f"<th class='text-center'>{h}</th>"
-                    for h in inc_headers
+                    (f"<th class='text-center' style='text-align:center'>{h}</th>" if i else f"<th class='text-left'>{h}</th>")
+                    for i, h in enumerate(inc_headers)
                 ]
             )
             + "</tr>"
