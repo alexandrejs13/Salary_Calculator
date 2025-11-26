@@ -317,8 +317,8 @@ def main():
    Seguro acidente: 1%, 2% ou 3% conforme o risco, ajustado pelo FAP.
                 """,
             )
-            # Preserva quebras de linha da tradução usando <br/>
-            st.markdown(body.replace("\n", "<br/>"), unsafe_allow_html=True)
+            # Preserva quebras de linha da tradução substituindo sequências literais \n por quebras reais
+            st.markdown(body.replace("\\n", "\n"), unsafe_allow_html=False)
 
 
 if __name__ == "__main__":
