@@ -178,59 +178,68 @@ def main():
         table_html = ["<table class='result-table'>"]
         table_html.append(
             "<tr>"
-            "<th class='text-left' style='width:18%'>Tipo</th>"
-            "<th class='text-left' style='width:32%'>Descrição</th>"
-            "<th class='text-center' style='width:15%'>% empregador</th>"
-            "<th class='text-right' style='width:17.5%'>Valor mensal (12)</th>"
-            "<th class='text-right' style='width:17.5%'>Valor anual</th>"
+            "<th class='text-left' style='width:14%; white-space:nowrap'>Tipo</th>"
+            "<th class='text-left' style='width:38%'>Descrição</th>"
+            "<th class='text-center' style='width:14%'>% empregador</th>"
+            "<th class='text-right' style='width:17%'>Valor mensal (12)</th>"
+            "<th class='text-right' style='width:17%'>Valor anual</th>"
             "</tr>"
         )
-        for label, rate, annual_value, cat, type_label in all_rows:
-            monthly_value = annual_value / 12
-            rate_txt = f"{rate:.2f}%" if rate else "—"
-            cat_label = type_label
-            table_html.append(
-                f"<tr>"
-                f"<td class='text-left' style='width:18%; white-space:nowrap'>{cat_label}</td>"
-                f"<td class='text-left' style='width:32%'>{label}</td>"
-                f"<td class='text-center' style='width:15%'>{rate_txt}</td>"
-                f"<td class='text-right' style='width:17.5%'>{currency} {monthly_value:,.2f}</td>"
-                f"<td class='text-right' style='width:17.5%'>{currency} {annual_value:,.2f}</td>"
-                f"</tr>"
-            )
+        rem_rows = [r for r in all_rows if r[3] == "rem" or r[4] == "Remuneração"]
+        ben_rows = [r for r in all_rows if r[3] == "benefit" or r[4] == "Benefícios"]
+        charge_rows = [r for r in all_rows if r[3] == "charge" or r[4] == "Encargos"]
+
+        def render_rows(rows, show_percent: bool = False):
+            for label, rate, annual_value, _cat, type_label in rows:
+                monthly_value = annual_value / 12
+                rate_txt = f"{rate:.2f}%" if (show_percent and rate) else ("—" if show_percent else "")
+                table_html.append(
+                    f"<tr>"
+                    f"<td class='text-left' style='width:14%; white-space:nowrap'>{type_label}</td>"
+                    f"<td class='text-left' style='width:38%'>{label}</td>"
+                    f"<td class='text-center' style='width:14%'>{rate_txt}</td>"
+                    f"<td class='text-right' style='width:17%'>{currency} {monthly_value:,.2f}</td>"
+                    f"<td class='text-right' style='width:17%'>{currency} {annual_value:,.2f}</td>"
+                    f"</tr>"
+                )
+
+        render_rows(rem_rows, show_percent=False)
+        render_rows(ben_rows, show_percent=False)
+        render_rows(charge_rows, show_percent=True)
+
         # Subtotais em cinza claro
         def pct(total):
             return (total / total_cost * 100) if total_cost else 0
         table_html.append(
             f"<tr style='background:#f4f4f4'>"
-            f"<td class='text-left' style='width:18%; white-space:nowrap'>Subtotal Remuneração ({pct(rem_total):.1f}%)</td>"
-            f"<td style='width:32%'></td><td class='text-center' style='width:15%'></td>"
-            f"<td class='text-right' style='width:17.5%'>{currency} {(rem_total/12):,.2f}</td>"
-            f"<td class='text-right' style='width:17.5%'>{currency} {rem_total:,.2f}</td>"
+            f"<td class='text-left' style='width:14%; white-space:nowrap'>Subtotal Remuneração ({pct(rem_total):.1f}%)</td>"
+            f"<td style='width:38%'></td><td class='text-center' style='width:14%'></td>"
+            f"<td class='text-right' style='width:17%'>{currency} {(rem_total/12):,.2f}</td>"
+            f"<td class='text-right' style='width:17%'>{currency} {rem_total:,.2f}</td>"
             f"</tr>"
         )
         table_html.append(
             f"<tr style='background:#f4f4f4'>"
-            f"<td class='text-left' style='width:18%; white-space:nowrap'>Subtotal Benefícios ({pct(ben_total):.1f}%)</td>"
-            f"<td style='width:32%'></td><td class='text-center' style='width:15%'></td>"
-            f"<td class='text-right' style='width:17.5%'>{currency} {(ben_total/12):,.2f}</td>"
-            f"<td class='text-right' style='width:17.5%'>{currency} {ben_total:,.2f}</td>"
+            f"<td class='text-left' style='width:14%; white-space:nowrap'>Subtotal Benefícios ({pct(ben_total):.1f}%)</td>"
+            f"<td style='width:38%'></td><td class='text-center' style='width:14%'></td>"
+            f"<td class='text-right' style='width:17%'>{currency} {(ben_total/12):,.2f}</td>"
+            f"<td class='text-right' style='width:17%'>{currency} {ben_total:,.2f}</td>"
             f"</tr>"
         )
         table_html.append(
             f"<tr style='background:#f4f4f4'>"
-            f"<td class='text-left' style='width:18%; white-space:nowrap'>Subtotal Encargos ({pct(charge_total):.1f}%)</td>"
-            f"<td style='width:32%'></td>"
-            f"<td class='text-center' style='width:15%'>{charge_pct_sum:.2f}%</td>"
-            f"<td class='text-right' style='width:17.5%'>{currency} {(charge_total/12):,.2f}</td>"
-            f"<td class='text-right' style='width:17.5%'>{currency} {charge_total:,.2f}</td>"
+            f"<td class='text-left' style='width:14%; white-space:nowrap'>Subtotal Encargos ({pct(charge_total):.1f}%)</td>"
+            f"<td style='width:38%'></td>"
+            f"<td class='text-center' style='width:14%'>{charge_pct_sum:.2f}%</td>"
+            f"<td class='text-right' style='width:17%'>{currency} {(charge_total/12):,.2f}</td>"
+            f"<td class='text-right' style='width:17%'>{currency} {charge_total:,.2f}</td>"
             f"</tr>"
         )
         table_html.append(
             f"<tr class='final-row'>"
-            f"<td class='text-left' style='width:18%'>Total</td><td style='width:32%'></td><td class='text-center' style='width:15%'></td>"
-            f"<td class='text-right' style='width:17.5%'>{currency} {(total_cost/12):,.2f}</td>"
-            f"<td class='text-right' style='width:17.5%'>{currency} {total_cost:,.2f}</td>"
+            f"<td class='text-left' style='width:14%'>Total</td><td style='width:38%'></td><td class='text-center' style='width:14%'></td>"
+            f"<td class='text-right' style='width:17%'>{currency} {(total_cost/12):,.2f}</td>"
+            f"<td class='text-right' style='width:17%'>{currency} {total_cost:,.2f}</td>"
             f"</tr>"
         )
         table_html.append("</table>")
