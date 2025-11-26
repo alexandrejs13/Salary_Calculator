@@ -180,7 +180,7 @@ def main():
             "<tr>"
             "<th class='text-left' style='width:25%; white-space:nowrap'>Tipo</th>"
             "<th class='text-left' style='width:25%'>Descrição</th>"
-            "<th class='text-center' style='width:16.6%'>% empregador</th>"
+            "<th class='text-center' style='width:16.6%'>% Encargos</th>"
             "<th class='text-right' style='width:16.6%; text-align:right'>Valor mensal</th>"
             "<th class='text-right' style='width:16.6%; text-align:right'>Valor anual</th>"
             "</tr>"
@@ -257,7 +257,12 @@ def main():
         inc_html = ["<table class='result-table'>"]
         inc_html.append(
             "<tr>"
-            + "".join([f"<th class='text-center'>{h}</th>" for h in inc_headers])
+            + "".join(
+                [
+                    f"<th class='text-center'>{h}</th>"
+                    for h in inc_headers
+                ]
+            )
             + "</tr>"
         )
         for row in inc_matrix:
