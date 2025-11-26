@@ -282,10 +282,9 @@ def main():
         st.markdown("\n".join(inc_html), unsafe_allow_html=True)
         st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
         with st.expander(translations.get("charges_explainer_title", "O que é cada encargo ?"), expanded=False):
-            st.markdown(
-                translations.get(
-                    "charges_explainer_body",
-                    """
+            body = translations.get(
+                "charges_explainer_body",
+                """
 1. **13º salário**
    Remuneração adicional equivalente a 1 salário por ano, paga em até duas parcelas.
    Custo para a empresa: provisão mensal de 1/12 do salário (= 8,33%).
@@ -316,10 +315,10 @@ def main():
 
 7. **RAT (Risco Ambiental do Trabalho)**
    Seguro acidente: 1%, 2% ou 3% conforme o risco, ajustado pelo FAP.
-                    """,
-                ),
-                unsafe_allow_html=False,
+                """,
             )
+            # Preserva quebras de linha da tradução usando <br/>
+            st.markdown(body.replace("\n", "<br/>"), unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
