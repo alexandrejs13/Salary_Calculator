@@ -281,40 +281,43 @@ def main():
         inc_html.append("</table>")
         st.markdown("\n".join(inc_html), unsafe_allow_html=True)
         st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
-        with st.expander("O que é cada encargo ?", expanded=False):
+        with st.expander(translations.get("charges_explainer_title", "O que é cada encargo ?"), expanded=False):
             st.markdown(
-                """
-1. **13º salário**  
-   Remuneração adicional equivalente a 1 salário por ano, paga em até duas parcelas.  
-   Custo para a empresa: provisão mensal de 1/12 do salário (= 8,33%).  
+                translations.get(
+                    "charges_explainer_body",
+                    """
+1. **13º salário**
+   Remuneração adicional equivalente a 1 salário por ano, paga em até duas parcelas.
+   Custo para a empresa: provisão mensal de 1/12 do salário (= 8,33%).
    Incidências: INSS patronal, FGTS e RAT.
 
-2. **Férias**  
-   Direito anual de 30 dias remunerados, acrescidos do 1/3 constitucional.  
-   Custo para a empresa: provisão mensal de 1/12 (= 8,33%).  
+2. **Férias**
+   Direito anual de 30 dias remunerados, acrescidos do 1/3 constitucional.
+   Custo para a empresa: provisão mensal de 1/12 (= 8,33%).
    Incidências: INSS patronal, FGTS e RAT.
 
-3. **1/3 de férias**  
-   Adicional obrigatório de 33,33% sobre o valor das férias.  
-   Custo: equivale a 2,78% ao mês na provisão.  
-   Incidências: sofre INSS e FGTS.  
-   ✔️ Observação: convenções coletivas podem elevar para 40% ou 50%, aumentando o custo.
+3. **1/3 de férias**
+   Adicional obrigatório de 33,33% sobre o valor das férias.
+   Custo: equivale a 2,78% ao mês na provisão.
+   Incidências: sofre INSS e FGTS.
+   Observação: convenções coletivas podem elevar para 40% ou 50%, aumentando o custo.
 
-4. **FGTS**  
-   Depósito mensal de 8% do salário bruto.  
+4. **FGTS**
+   Depósito mensal de 8% do salário bruto.
    Base: salário + adicionais + 13º + férias. Não incide sobre benefícios ou indenizações.
 
-5. **INSS Patronal**  
-   Contribuição da empresa à Previdência (alíquota padrão 20%).  
+5. **INSS Patronal**
+   Contribuição da empresa à Previdência (alíquota padrão 20%).
    Pode variar por desoneração ou Simples.
 
-6. **Sistema S / Terceiros**  
-   Contribuições para SESI, SENAI, SESC, SEBRAE, INCRA, Salário-Educação etc.  
+6. **Sistema S / Terceiros**
+   Contribuições para SESI, SENAI, SESC, SEBRAE, INCRA, Salário-Educação etc.
    Alíquota varia por setor; aqui usamos 2,5% como referência.
 
-7. **RAT (Risco Ambiental do Trabalho)**  
+7. **RAT (Risco Ambiental do Trabalho)**
    Seguro acidente: 1%, 2% ou 3% conforme o risco, ajustado pelo FAP.
-                """,
+                    """,
+                ),
                 unsafe_allow_html=False,
             )
 

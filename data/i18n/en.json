@@ -45,6 +45,8 @@
   "employer_contrib_info": "Employer contributions",
   "country_select_placeholder": "Select a country",
   "salary_net_target": "Target net salary",
+  "charges_explainer_title": "What is each employer charge?",
+  "charges_explainer_body": "1. **13th salary**\\n   An extra month's pay per year, paid in up to two installments.\\n   Cost: monthly accrual of 1/12 of salary (= 8.33%).\\n   Incidence: employer social security, FGTS (Brazil fund) and workplace risk.\\n\\n2. **Vacation pay**\\n   30 paid days per year, plus the one-third constitutional add-on.\\n   Cost: monthly accrual of 1/12 (= 8.33%).\\n   Incidence: employer social security, FGTS and workplace risk.\\n\\n3. **Vacation one-third**\\n   Mandatory 33.33% add-on on vacation pay.\\n   Cost: about 2.78% of salary per month.\\n   Incidence: employer social security and FGTS.\\n   Note: collective bargaining may raise this to 40% or 50%, increasing the cost.\\n\\n4. **FGTS**\\n   Monthly deposit of 8% of gross salary (Brazil).\\n   Base: salary + additions + 13th + vacation. Does not apply to benefits or severance.\\n\\n5. **Employer Social Security**\\n   Contribution to social security (standard 20% in Brazil; varies elsewhere).\\n   Can change with payroll tax relief or simplified regimes.\\n\\n6. **Sistema S / Third Parties**\\n   Contributions to entities like SESI, SENAI, SESC, SEBRAE, INCRA, Education Salary.\\n   Rate varies by sector; we use 2.5% as a reference.\\n\\n7. **RAT (Workplace Risk Insurance)**\\n   Accident insurance: 1%, 2%, or 3% depending on risk, adjusted by FAP in Brazil."
   "reverse_button": "Calculate gross salary",
   "multi_country_label": "Countries to compare",
   "export_csv": "Export CSV",
