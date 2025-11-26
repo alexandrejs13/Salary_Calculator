@@ -257,7 +257,7 @@ def main():
         inc_html = ["<table class='result-table'>"]
         inc_html.append(
             "<tr>"
-            + "".join([f\"<th class='text-center'>{h}</th>\" for h in inc_headers])
+            + "".join([f"<th class='text-center'>{h}</th>" for h in inc_headers])
             + "</tr>"
         )
         for row in inc_matrix:
