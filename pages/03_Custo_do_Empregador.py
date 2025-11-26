@@ -178,11 +178,11 @@ def main():
         table_html = ["<table class='result-table'>"]
         table_html.append(
             "<tr>"
-            "<th class='text-left' style='width:14%; white-space:nowrap'>Tipo</th>"
-            "<th class='text-left' style='width:38%'>Descrição</th>"
-            "<th class='text-center' style='width:14%'>% empregador</th>"
-            "<th class='text-right' style='width:17%'>Valor mensal (12)</th>"
-            "<th class='text-right' style='width:17%'>Valor anual</th>"
+            "<th class='text-left' style='width:18%; white-space:nowrap'>Tipo</th>"
+            "<th class='text-left' style='width:36%'>Descrição</th>"
+            "<th class='text-center' style='width:12%'>% empregador</th>"
+            "<th class='text-right' style='width:17%; text-align:right'>Valor mensal</th>"
+            "<th class='text-right' style='width:17%; text-align:right'>Valor anual</th>"
             "</tr>"
         )
         rem_rows = [r for r in all_rows if r[3] == "rem" or r[4] == "Remuneração"]
@@ -195,11 +195,11 @@ def main():
                 rate_txt = f"{rate:.2f}%" if (show_percent and rate) else ("—" if show_percent else "")
                 table_html.append(
                     f"<tr>"
-                    f"<td class='text-left' style='width:14%; white-space:nowrap'>{type_label}</td>"
-                    f"<td class='text-left' style='width:38%'>{label}</td>"
-                    f"<td class='text-center' style='width:14%'>{rate_txt}</td>"
-                    f"<td class='text-right' style='width:17%'>{currency} {monthly_value:,.2f}</td>"
-                    f"<td class='text-right' style='width:17%'>{currency} {annual_value:,.2f}</td>"
+                    f"<td class='text-left' style='width:18%; white-space:nowrap'>{type_label}</td>"
+                    f"<td class='text-left' style='width:36%'>{label}</td>"
+                    f"<td class='text-center' style='width:12%'>{rate_txt}</td>"
+                    f"<td class='text-right' style='width:17%; text-align:right'>{currency} {monthly_value:,.2f}</td>"
+                    f"<td class='text-right' style='width:17%; text-align:right'>{currency} {annual_value:,.2f}</td>"
                     f"</tr>"
                 )
 
@@ -212,34 +212,34 @@ def main():
             return (total / total_cost * 100) if total_cost else 0
         table_html.append(
             f"<tr style='background:#f4f4f4'>"
-            f"<td class='text-left' style='width:14%; white-space:nowrap'>Subtotal Remuneração ({pct(rem_total):.1f}%)</td>"
-            f"<td style='width:38%'></td><td class='text-center' style='width:14%'></td>"
-            f"<td class='text-right' style='width:17%'>{currency} {(rem_total/12):,.2f}</td>"
-            f"<td class='text-right' style='width:17%'>{currency} {rem_total:,.2f}</td>"
+            f"<td class='text-left' style='width:18%; white-space:nowrap'>Subtotal Remuneração ({pct(rem_total):.1f}%)</td>"
+            f"<td style='width:36%'></td><td class='text-center' style='width:12%'></td>"
+            f"<td class='text-right' style='width:17%; text-align:right'>{currency} {(rem_total/12):,.2f}</td>"
+            f"<td class='text-right' style='width:17%; text-align:right'>{currency} {rem_total:,.2f}</td>"
             f"</tr>"
         )
         table_html.append(
             f"<tr style='background:#f4f4f4'>"
-            f"<td class='text-left' style='width:14%; white-space:nowrap'>Subtotal Benefícios ({pct(ben_total):.1f}%)</td>"
-            f"<td style='width:38%'></td><td class='text-center' style='width:14%'></td>"
-            f"<td class='text-right' style='width:17%'>{currency} {(ben_total/12):,.2f}</td>"
-            f"<td class='text-right' style='width:17%'>{currency} {ben_total:,.2f}</td>"
+            f"<td class='text-left' style='width:18%; white-space:nowrap'>Subtotal Benefícios ({pct(ben_total):.1f}%)</td>"
+            f"<td style='width:36%'></td><td class='text-center' style='width:12%'></td>"
+            f"<td class='text-right' style='width:17%; text-align:right'>{currency} {(ben_total/12):,.2f}</td>"
+            f"<td class='text-right' style='width:17%; text-align:right'>{currency} {ben_total:,.2f}</td>"
             f"</tr>"
         )
         table_html.append(
             f"<tr style='background:#f4f4f4'>"
-            f"<td class='text-left' style='width:14%; white-space:nowrap'>Subtotal Encargos ({pct(charge_total):.1f}%)</td>"
-            f"<td style='width:38%'></td>"
-            f"<td class='text-center' style='width:14%'>{charge_pct_sum:.2f}%</td>"
-            f"<td class='text-right' style='width:17%'>{currency} {(charge_total/12):,.2f}</td>"
-            f"<td class='text-right' style='width:17%'>{currency} {charge_total:,.2f}</td>"
+            f"<td class='text-left' style='width:18%; white-space:nowrap'>Subtotal Encargos ({pct(charge_total):.1f}%)</td>"
+            f"<td style='width:36%'></td>"
+            f"<td class='text-center' style='width:12%'>{charge_pct_sum:.2f}%</td>"
+            f"<td class='text-right' style='width:17%; text-align:right'>{currency} {(charge_total/12):,.2f}</td>"
+            f"<td class='text-right' style='width:17%; text-align:right'>{currency} {charge_total:,.2f}</td>"
             f"</tr>"
         )
         table_html.append(
             f"<tr class='final-row'>"
-            f"<td class='text-left' style='width:14%'>Total</td><td style='width:38%'></td><td class='text-center' style='width:14%'></td>"
-            f"<td class='text-right' style='width:17%'>{currency} {(total_cost/12):,.2f}</td>"
-            f"<td class='text-right' style='width:17%'>{currency} {total_cost:,.2f}</td>"
+            f"<td class='text-left' style='width:18%'>Total</td><td style='width:36%'></td><td class='text-center' style='width:12%; color:white; font-weight:bold'>{charge_pct_sum:.2f}%</td>"
+            f"<td class='text-right' style='width:17%; text-align:right'>{currency} {(total_cost/12):,.2f}</td>"
+            f"<td class='text-right' style='width:17%; text-align:right'>{currency} {total_cost:,.2f}</td>"
             f"</tr>"
         )
         table_html.append("</table>")
@@ -257,12 +257,7 @@ def main():
         inc_html = ["<table class='result-table'>"]
         inc_html.append(
             "<tr>"
-            + "".join(
-                [
-                    f"<th class='text-center'>{h}</th>" if i else f"<th class='text-left'>{h}</th>"
-                    for i, h in enumerate(inc_headers)
-                ]
-            )
+            + "".join([f\"<th class='text-center'>{h}</th>\" for h in inc_headers])
             + "</tr>"
         )
         for row in inc_matrix:
