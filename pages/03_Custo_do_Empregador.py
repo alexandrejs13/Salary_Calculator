@@ -169,9 +169,9 @@ def main():
         for label, rate_pct, val in employer_rows:
             all_rows.append((label, rate_pct, val, "charge", "Encargos"))
 
-        rem_total = sum(val for _, _, val, cat, _ in all_rows if cat == "rem")
-        ben_total = sum(val for _, _, val, cat, _ in all_rows if cat == "benefit")
-        charge_total = sum(val for _, _, val, cat, _ in all_rows if cat == "charge")
+        rem_total = sum(val for _, _, val, cat, type_lbl in all_rows if cat == "rem" or type_lbl == "Remuneração")
+        ben_total = sum(val for _, _, val, cat, type_lbl in all_rows if cat == "benefit" or type_lbl == "Benefícios")
+        charge_total = sum(val for _, _, val, cat, type_lbl in all_rows if cat == "charge" or type_lbl == "Encargos")
         total_cost = rem_total + ben_total + charge_total
         charge_base_pct = (charge_total / total_cost * 100) if total_cost else 0.0
         st.markdown("### " + translations.get("section_employer_cost", "Custo do empregador"))
